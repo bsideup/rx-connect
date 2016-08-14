@@ -47,7 +47,7 @@ export default class PostsView extends React.PureComponent {
                 <div className="centered row">
                     <div className="ui pagination menu">
                         { [...Array(totalPages)].map((value, i) => (
-                            <Link key={i} to={`/posts?page=${i}`} className={ `${ i === page ? "active" : "" } item`}>{i}</Link>
+                            <Link key={i} to={`/posts?page=${i}`} className={ `${ i === page ? "active" : "" } item`}>{i + 1}</Link>
                         ))}
                     </div>
                 </div>
