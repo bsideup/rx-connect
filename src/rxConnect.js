@@ -1,5 +1,11 @@
 import React  from "react";
 import Rx from "rx";
+import isPlainObject from 'lodash/isPlainObject';
+import warning from "redux/lib/utils/warning";
+
+function getDisplayName(WrappedComponent) {
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+}
 
 export default function rxConnect(selectState) {
     return WrappedComponent => class RxConnector extends React.PureComponent {
@@ -34,7 +40,14 @@ export default function rxConnect(selectState) {
         }
 
         componentWillMount() {
-            this.stateSubscription = selectState(this.props$, this.state$, this.store.dispatch).subscribe(props => this.setState({ props }));
+            this.stateSubscription = selectState(this.props$, this.state$, this.store.dispatch).subscribe(props => {
+                if (!isPlainObject(props)) {
+                    warning(`RxConnect stream *must* return plain object of properties. Check rxConnect of ${getDisplayName(WrappedComponent)}`);
+                    return;
+                }
+
+                this.setState({ props });
+            });
         }
 
         componentWillUnmount() {

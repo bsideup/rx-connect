@@ -1,0 +1,71 @@
+@import url(~semantic-ui-css/semantic.css);
+
+.main.container {
+    margin-top: 3em;
+
+    min-height: 400px;
+
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 62.5rem;
+}
+
+.ui.footer.segment {
+    margin: 5em 0em 0em;
+    padding: 5em 0em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    color: #222222;
+    margin-top: 0.2rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+h1 {
+    font-size: 2.75rem;
+}
+h2 {
+    font-size: 2.3125rem;
+}
+h3 {
+    font-size: 1.6875rem;
+}
+h4 {
+    font-size: 1.4375rem;
+}
+h5 {
+    font-size: 1.125rem;
+}
+p {
+    font-family: inherit;
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+p.lead {
+    font-size: 1.21875rem;
+    line-height: 1.6;
+}
+p aside {
+    font-size: 0.875rem;
+    line-height: 1.35;
+    font-style: italic;
+}
+
+body > .grid {
+    height: 100%;
+}
+
+.login > .column {
+    max-width: 450px;
+}
