@@ -9,10 +9,10 @@ import { fetchUsers } from "../actions/users";
 
 import Post from "./Post";
 
-@rxConnect((props$, state$, dispatch) => props$.map(({ location: { query: { page } } }) => page && Number(page)).distinctUntilChanged().flatMapLatest((page = 0) => {
+@rxConnect((props$, state$, dispatch) => props$.map(({ location: { query: { page } } }) => page ? Number(page) : 1).distinctUntilChanged().flatMapLatest(page => {
     return Rx.Observable
         .combineLatest(
-            dispatch(fetchPosts({ page })),
+            dispatch(fetchPosts({ page: page - 1 })),
             dispatch(fetchUsers()).map(users => users::keyBy("id"))
         )
         .map(([ posts, users ]) => ({
@@ -46,8 +46,8 @@ export default class PostsView extends React.PureComponent {
 
                 <div className="centered row">
                     <div className="ui pagination menu">
-                        { [...Array(totalPages)].map((value, i) => (
-                            <Link key={i} to={`/posts?page=${i}`} className={ `${ i === page ? "active" : "" } item`}>{i + 1}</Link>
+                        { [...Array(totalPages)].map((value, i) => i + 1).map(i => (
+                            <Link key={i} to={`/posts?page=${i}`} className={ `${ i === page ? "active" : "" } item`}>{i}</Link>
                         ))}
                     </div>
                 </div>
