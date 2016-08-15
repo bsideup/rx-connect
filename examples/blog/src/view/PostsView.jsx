@@ -20,7 +20,6 @@ import Post from "./Post";
             posts: posts.data
                 .map(post => ({
                     ...post,
-                    description: `${post.body.repeat(2).slice(0, -35)}...`,
                     user: users[post.userId]
                 }))
         }))

@@ -14,10 +14,6 @@ import Comments from "./Comments";
     return Rx.Observable
         .combineLatest(
             dispatch(fetchPost(postId))
-                .map(post => ({
-                    ...post,
-                    body: post.body.repeat(10), // Fake long post
-                }))
                 .flatMapLatest(post =>
                     dispatch(fetchUser(post.userId))
                         .map(user => ({ ...post, user }))

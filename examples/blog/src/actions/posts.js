@@ -12,6 +12,7 @@ export function fetchPosts({ userId, page } = {}) {
             .map(posts => posts
                 .map(post => ({
                     ...post,
+                    description: `${post.body.repeat(2).slice(0, -35)}...`, // Fake description
                     hashCode: post.title::hashCode(),
                 }))
                 .sort((a, b) => a.hashCode - b.hashCode) // better posts distribution because jsonplaceholder returns them sorted by user
@@ -25,7 +26,12 @@ export function fetchPosts({ userId, page } = {}) {
 
 export function fetchPost(postId) {
     return () => {
-        return Rx.DOM.getJSON(`//jsonplaceholder.typicode.com/posts/${postId}`).delay(100);
+        return Rx.DOM.getJSON(`//jsonplaceholder.typicode.com/posts/${postId}`)
+            .delay(100)
+            .map(post => ({
+                ...post,
+                body: post.body.repeat(10), // Fake long post
+            }));
     }
 }
 
