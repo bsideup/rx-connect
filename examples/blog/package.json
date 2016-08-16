@@ -16,7 +16,7 @@
     "redux-logger": "~2.6.1",
     "redux-thunk": "~2.1.0",
     "rx": "~4.1.0",
-    "rx-connect": "^0.1.0",
+    "rx-connect": "^0.1.5",
     "rx-dom": "^7.0.3",
     "semantic-ui-css": "~2.2.2"
   },

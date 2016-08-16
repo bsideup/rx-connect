@@ -9,7 +9,7 @@
     "react": "~15.3.0",
     "react-dom": "~15.3.0",
     "rx": "~4.1.0",
-    "rx-connect": "^0.1.4",
+    "rx-connect": "^0.1.5",
     "semantic-ui-css": "~2.2.2"
   },
   "devDependencies": {
