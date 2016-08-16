@@ -1,7 +1,6 @@
 import React  from "react";
 import Rx from "rx";
-import isPlainObject from 'lodash/isPlainObject';
-import warning from "redux/lib/utils/warning";
+import isPlainObject from 'lodash.isplainobject';
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -13,7 +12,7 @@ export default function rxConnect(selectState) {
         static displayName = 'RxConnector';
 
         static contextTypes = {
-            store: React.PropTypes.object.isRequired
+            store: React.PropTypes.object
         };
 
         stateSubscription = undefined;
@@ -33,16 +32,19 @@ export default function rxConnect(selectState) {
 
             this.store = props.store || context.store;
 
-            this.state$ = Rx.Observable
-                .create(observer => this.store.subscribe(() => observer.onNext(this.store.getState())))
-                .startWith(this.store.getState())
-                .distinctUntilChanged();
+            if (this.store) {
+                this.state$ = Rx.Observable
+                    .create(observer => this.store.subscribe(() => observer.onNext(this.store.getState())))
+                    .startWith(this.store.getState())
+                    .distinctUntilChanged();
+            }
         }
 
         componentWillMount() {
-            this.stateSubscription = selectState(this.props$, this.state$, this.store.dispatch).subscribe(props => {
+            this.stateSubscription = selectState(this.props$, this.state$, this.store && this.store.dispatch).subscribe(props => {
                 if (!isPlainObject(props)) {
-                    warning(`RxConnect stream *must* return plain object of properties. Check rxConnect of ${getDisplayName(WrappedComponent)}`);
+                    // eslint-disable-next-line no-console
+                    console.error(`RxConnect stream *must* return plain object of properties. Check rxConnect of ${getDisplayName(WrappedComponent)}`);
                     return;
                 }
 

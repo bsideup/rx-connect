@@ -1,16 +1,23 @@
 {
   "name": "rx-connect",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Connect React components to Redux store with RxJS-based HOC",
   "main": "./lib/index.js",
   "scripts": {
     "clean": "rimraf lib dist",
+
     "build:lib": "babel src --out-dir lib",
     "build:umd": "cross-env NODE_ENV=development webpack src/index.js dist/rx-connect.js",
     "build:umd:min": "cross-env NODE_ENV=production webpack src/index.js dist/rx-connect.min.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
+
     "prepublish": "npm run clean && npm run build",
-    "ghPages": "cd examples/blog/ && cross-env NODE_ENV=production npm run build && cd ../../ && gh-pages -d . --src 'examples/blog/dist/**'"
+
+    "examples:build:blog": "cd examples/blog/ && cross-env NODE_ENV=production npm run build",
+    "examples:build:wikistream": "cd examples/wikistream/ && cross-env NODE_ENV=production npm run build",
+    "examples:build": "npm run examples:build:blog && npm run examples:build:wikistream",
+
+    "ghPages": "gh-pages -d . --src 'examples/*/dist/**'"
   },
   "keywords": [
     "redux",
@@ -52,5 +59,8 @@
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
     "rx": "^4.1.0"
+  },
+  "dependencies": {
+    "lodash.isplainobject": "^4.0.6"
   }
 }
