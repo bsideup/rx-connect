@@ -99,10 +99,10 @@ class WikiStream extends React.PureComponent {
                     </tr>
                     </thead>
                     <tbody>
-                    {items.map(({ id, timestamp, user, title, comment }) => (
+                    {items.map(({ id, timestamp, user, title, comment, server_url }) => (
                         <tr key={id || timestamp}>
                             <td>{user}</td>
-                            <td>{title}</td>
+                            <td><a href={`${server_url}/wiki/${title}`} target="_blank">{title}</a></td>
                             <td>{comment}</td>
                         </tr>
                     )) }

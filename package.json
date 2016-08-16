@@ -17,7 +17,7 @@
     "examples:build:wikistream": "cd examples/wikistream/ && cross-env NODE_ENV=production npm run build",
     "examples:build": "npm run examples:build:blog && npm run examples:build:wikistream",
 
-    "ghPages": "gh-pages -d . --src 'examples/*/dist/**'"
+    "ghPages": "npm run examples:build && gh-pages -d . --src 'examples/*/dist/**'"
   },
   "keywords": [
     "redux",
