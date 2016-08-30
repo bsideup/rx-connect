@@ -25,6 +25,8 @@ export default function rxConnect(selectState) {
             props: {}
         };
 
+        shouldDebounce = false;
+
         constructor(props, context) {
             super(props, context);
 
@@ -41,15 +43,23 @@ export default function rxConnect(selectState) {
         }
 
         componentWillMount() {
-            this.stateSubscription = selectState(this.props$, this.state$, this.store && this.store.dispatch).subscribe(props => {
-                if (!isPlainObject(props)) {
-                    // eslint-disable-next-line no-console
-                    console.error(`RxConnect stream *must* return plain object of properties. Check rxConnect of ${getDisplayName(WrappedComponent)}`);
-                    return;
-                }
+            this.shouldDebounce = false;
 
-                this.setState({ props });
-            });
+            this.stateSubscription = selectState(this.props$, this.state$, this.store && this.store.dispatch)
+                .debounce(() => this.shouldDebounce ? Rx.Observable.interval(1) : Rx.Observable.of())
+                .subscribe(props => {
+                    if (!isPlainObject(props)) {
+                        // eslint-disable-next-line no-console
+                        console.error(`RxConnect stream *must* return plain object of properties. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, props);
+                        return;
+                    }
+
+                    this.setState({ props });
+                });
+        }
+
+        componentDidMount() {
+            this.shouldDebounce = true;
         }
 
         componentWillUnmount() {

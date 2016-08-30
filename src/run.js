@@ -19,10 +19,23 @@ export default function run(reactions$, actions = {}) {
             {}
         );
 
-    return Rx.Observable.of(actionCreators)
-        .concat(reactions$)
-        .scan( (state, reducerOrStatePart) => ({
-            ...state,
-            ...(isPlainObject(reducerOrStatePart) ? reducerOrStatePart : reducerOrStatePart(state))
-        }));
+    return Rx.Observable
+        .merge(
+            Rx.Observable.of(actionCreators),
+            reactions$
+        )
+        .scan((state, mutation) => {
+            let change;
+            if (isPlainObject(mutation)) {
+                change = mutation;
+            } else if (typeof mutation === "function") {
+                change = mutation(state);
+            } else {
+                // eslint-disable-next-line no-console
+                console.error(`Mutation must be a plain object or function. Got: `, mutation);
+                return state;
+            }
+
+            return Object.assign({}, state, change);
+        }, {});
 }

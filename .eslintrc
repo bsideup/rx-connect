@@ -31,7 +31,7 @@
         "object-curly-spacing": [2, "always"],
 
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
-        "indent": [2, 4, {"SwitchCase": 1}], // NB! Disabled at the moment because of extra indentation in browserify branch
+        "indent": [2, 4, {"SwitchCase": 1}],
         "linebreak-style": [2, "unix"],
         "quotes": 0,
         "space-infix-ops": 0,

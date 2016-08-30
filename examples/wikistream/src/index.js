@@ -32,7 +32,7 @@ const CHANNELS = [
         .startWith(true)
         .shareReplay(1);
 
-    const reactions$ = new Rx.Observable.merge(
+    const reactions$ = Rx.Observable.merge(
         channel$.map(channel => ({ channel })),
 
         active$.map(active => ({ active })),

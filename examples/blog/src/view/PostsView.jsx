@@ -1,4 +1,5 @@
 import React from "react";
+import Rx from "rx";
 import { rxConnect } from "rx-connect";
 import { Link } from "react-router";
 
