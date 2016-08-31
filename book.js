@@ -1,9 +1,7 @@
 var pkg = require('./package.json');
 
 module.exports = {
-    structure: {
-        summary: "docs/README.md"
-    },
+    root: "./docs",
     
     title: 'RxConnect Documentation',
 
