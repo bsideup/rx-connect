@@ -1,7 +1,6 @@
 var pkg = require('./package.json');
 
 module.exports = {
-    root: '.',
     structure: {
         summary: "docs/README.md"
     },
