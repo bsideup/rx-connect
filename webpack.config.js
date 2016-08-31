@@ -23,7 +23,7 @@ var config = {
     'rx': rxExternal
   },
   output: {
-    library: "rx-connect",
+    library: "RxConnect",
     libraryTarget: "umd"
   },
   module: {
