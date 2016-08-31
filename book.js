@@ -8,7 +8,7 @@ module.exports = {
     gitbook: '3.1.1',
 
     // Use the "official" theme
-    plugins: ['theme-official@2.1.1', '-sharing', '-fontsettings', 'sitemap'],
+    plugins: ['theme-official@2.1.1', '-sharing', '-fontsettings'],
 
     variables: {
         version: pkg.version
