@@ -134,6 +134,6 @@ class MyView extends React.PureComponent {
     }
 }
 ```
-( http://codepen.io/bsideup/pen/mAbaom )
+[](codepen://bsideup/mAbaom?height=400&theme=0)
 
 Now our component not only pure, but [reactive](https://en.wikipedia.org/wiki/Reactive_programming) as well!
