@@ -1,7 +1,7 @@
 var pkg = require('./package.json');
 
 module.exports = {
-    root: './docs',
+    root: '.',
     title: 'RxConnect Documentation',
 
     // Enforce use of GitBook v3
