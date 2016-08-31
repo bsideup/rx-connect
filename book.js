@@ -7,7 +7,7 @@ module.exports = {
 
     gitbook: '3.1.1',
 
-    plugins: ['theme-official', '-sharing', '-fontsettings', 'codepen', 'regexplace'],
+    plugins: ['theme-official', 'codepen', 'regexplace'],
 
     pluginsConfig: {
         regexplace: {

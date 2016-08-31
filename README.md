@@ -1,4 +1,4 @@
-RxConnect
+RxConnect v{{ book.version }}
 ========
 
 RxConnect is like [Redux](https://github.com/reactjs/redux)'s `@connect`, but with all the power of [RxJS](https://github.com/Reactive-Extensions/RxJS).
@@ -90,7 +90,10 @@ with this:
     const reactions$ = Rx.Observable
         .combineLatest(
             state$.pluck("userId").distinctUntilChanged(),
-            actions.onCompleted$.map(([ completed ]) => completed).distinctUntilChanged()
+            actions.onCompleted$
+                .map(([ completed ]) => completed)
+                .startWith(false)
+                .distinctUntilChanged()
         )
         .flatMapLatest(([ userId, completed ]) => dispatch(fetchData(userId, completed)))
         .map(todos => ({ todos }))
