@@ -127,3 +127,18 @@ class TodoList extends React.PureComponent {
 }
 ```
 [](codepen://bsideup/EgxVKX?height=500)
+
+> **NB:** We use decorators from ES7, but it's not required. These two code blocks are completely identical:
+> ```javascript
+@rxConnect(...)
+export class MyView extends React.Component {
+    // ...
+}
+```
+> and
+> ```javascript
+class MyView extends React.Component {
+    // ...
+}
+export rxConnect(...)(MyView)
+```

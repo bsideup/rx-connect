@@ -58,12 +58,12 @@ The problem is so popular, there is even a special library for that: https://git
 
 The same can be implemented with one-liner in RxConnect:
 ```javascript
+import { rxConnect } from "rx-connect";
+
 @rxConnect(() => Rx.Observable.timer(0, 1000).map(counter => ({ counter })))
 class Timer extends React.PureComponent {
     render() {
-        return (
-            <div>{ this.props.counter }</div>
-        );
+        return <div>{ this.props.counter }</div>
     }
 }
 ```
