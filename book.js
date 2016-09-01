@@ -7,7 +7,7 @@ module.exports = {
 
     gitbook: '3.1.1',
 
-    plugins: ['theme-official', 'codepen', 'regexplace'],
+    plugins: ['theme-official', '-sharing', '-fontsettings', 'codepen', 'regexplace'],
 
     pluginsConfig: {
         regexplace: {
@@ -15,6 +15,9 @@ module.exports = {
                 { pattern: "<!--remove-->", flags: "g", substitute: '<div style="display: none;">' },
                 { pattern: "<!--endremove-->", flags: "g", substitute: "</div>" },
             ]
+        },
+        codepen: {
+            defaultTab: "result"
         }
     },
 

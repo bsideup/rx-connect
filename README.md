@@ -64,16 +64,20 @@ class TodoContainer extends React.Component {
 class TodoList extends React.PureComponent {
     render() {
         const { todos, onCompleted } = this.props;
-        return todos ? (
+        return (
             <div>
-                <input type="checkbox" onChange={ e => onCompleted(e.target.checked) } />
-                completed only <br />
-                <ul>
-                    { todos.map(todo => <li>{todo}</li>) }
-                </ul>
+                <label>
+                    <input type="checkbox" onChange={ e => onCompleted(e.target.checked) } />
+                    completed only
+                </label>
+                { todos ? (
+                    <ul>
+                        { todos.map(todo => <li key={todo.id}>{todo.title}</li>) }
+                    </ul>
+                ) : (
+                    <p>Loading...</p>
+                ) }
             </div>
-        ) : (
-            <p>Loading...<p>
         )
     }
 }
@@ -93,9 +97,10 @@ with this:
             actions.onCompleted$
                 .map(([ completed ]) => completed)
                 .startWith(false)
-                .distinctUntilChanged()
         )
-        .flatMapLatest(([ userId, completed ]) => dispatch(fetchData(userId, completed)))
+        .flatMapLatest(([ userId, completed ]) =>
+            dispatch(fetchData(userId, completed)).startWith(undefined)
+        )
         .map(todos => ({ todos }))
 
     return run(reactions$, actions);
@@ -103,17 +108,22 @@ with this:
 class TodoList extends React.PureComponent {
     render() {
         const { todos, onCompleted } = this.props;
-        return todos ? (
+        return (
             <div>
-                <input type="checkbox" onChange={ e => onCompleted(e.target.checked) } />
-                completed only <br />
-                <ul>
-                    { todos.map(todo => <li>{todo}</li>) }
-                </ul>
+                <label>
+                    <input type="checkbox" onChange={ e => onCompleted(e.target.checked) } />
+                    completed only
+                </label>
+                { todos ? (
+                    <ul>
+                        { todos.map(todo => <li key={todo.id}>{todo.title}</li>) }
+                    </ul>
+                ) : (
+                    <p>Loading...</p>
+                ) }
             </div>
-        ) : (
-            <p>Loading...<p>
         )
     }
 }
 ```
+[](codepen://bsideup/EgxVKX?height=500)
