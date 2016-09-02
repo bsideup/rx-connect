@@ -3,11 +3,19 @@ var pkg = require('./package.json');
 module.exports = {
     root: "./docs",
 
-    title: 'RxConnect Documentation',
+    title: 'RxConnect',
 
     gitbook: '3.1.1',
 
-    plugins: ['theme-official', '-sharing', '-fontsettings', 'codepen', 'regexplace'],
+    plugins: [
+        'theme-official',
+        '-sharing',
+        '-fontsettings',
+        '-highlight',
+        'prism_bsideup',
+        'codepen',
+        'regexplace'
+    ],
 
     pluginsConfig: {
         regexplace: {
