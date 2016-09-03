@@ -129,7 +129,7 @@ const articles$ = actions.search$
     .flatMapLatest(searchWikipedia)
 ```
 
-Our `reactions$` stream has only one reaction - on search, but there might be many of them, this is why we merge all of them in a single stream together with actions:
+Right now we have only one reaction - on search, but there might be many of them, this is why we merge all of them in a single stream together with actions:
 ```javascript
 return Rx.Observable.merge(
     Rx.Observable::ofActions(actions),
