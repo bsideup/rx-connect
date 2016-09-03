@@ -9,3 +9,5 @@
 
 ### Examples
 * [Timer](examples/timer.md)
+* [Blog](examples/blog.md)
+* [Wikipedia stream](examples/wikistream.md)
