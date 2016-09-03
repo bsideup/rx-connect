@@ -10,21 +10,27 @@ import { fetchUser } from "../../actions/users";
 
 import Comments from "./Comments";
 
-@rxConnect((props$, state$, dispatch) => props$.map(({ params: { postId } }) => postId).distinctUntilChanged().flatMapLatest(postId => {
-    return Rx.Observable
-        .combineLatest(
-            dispatch(fetchPost(postId))
-                .flatMapLatest(post =>
-                    dispatch(fetchUser(post.userId))
-                        .map(user => ({ ...post, user }))
-                ),
+@rxConnect((props$, state$, dispatch) => {
+    const postId$ = props$.pluck("params", "postId").distinctUntilChanged();
 
-            dispatch(fetchComments(postId)) // Fetch comments together with post's data to avoid flickering
-        )
-        .catch(e => Rx.Observable.of([null, null]))
-        .startWith([])
-        .map(([ post, comments ]) => ({ post, comments }))
-}))
+    return postId$.flatMapLatest(postId => {
+        const post$ = dispatch(fetchPost(postId))
+            .flatMapLatest(post =>
+                dispatch(fetchUser(post.userId))
+                    .map(user => ({ ...post, user }))
+            )
+            .catch(Rx.Observable.of(null));
+
+        const comments$ = dispatch(fetchComments(postId))
+            .catch(Rx.Observable.of(null));
+
+        // Fetch comments together with post's data to avoid flickering
+        return Rx.Observable
+            .combineLatest(post$, comments$)
+            .startWith([])
+            .map(([ post, comments ]) => ({ post, comments }));
+    });
+})
 export default class PostView extends React.PureComponent {
 
     render() {

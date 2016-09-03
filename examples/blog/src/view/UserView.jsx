@@ -8,20 +8,25 @@ import { hashCode, toHex } from "../utils";
 import { fetchUser } from "../actions/users";
 import { fetchPosts } from "../actions/posts";
 
-@rxConnect((props$, state$, dispatch) => props$.map(({ params: { userId } }) => userId).distinctUntilChanged().flatMapLatest(userId => {
-    return Rx.Observable
-        .combineLatest(
-            dispatch(fetchUser(userId))
-                .catch(() => Rx.Observable.of(null)),
+@rxConnect((props$, state$, dispatch) => {
+    const userId$ = props$.pluck("params", "userId").distinctUntilChanged().shareReplay(1);
 
-            dispatch(fetchPosts({ userId }))
-                .map(({ data }) => data)
-                .catch(() => Rx.Observable.of([]))
-        )
-        .startWith([])
-        .map(([ user, posts ]) => ({ user, posts }))
-}))
-export default class Single extends React.PureComponent {
+    return userId$.flatMapLatest(userId => {
+        const user$ = dispatch(fetchUser(userId))
+            .catch(Rx.Observable.of(null));
+
+        const postsByUser$ = dispatch(fetchPosts({ userId }))
+            .pluck("data")
+            .catch(Rx.Observable.of(null));
+
+        // combineLatest to wait until both user and posts arrived to avoid flickering
+        return Rx.Observable
+            .combineLatest(user$, postsByUser$)
+            .startWith([])
+            .map(([ user, posts ]) => ({ user, posts }));
+    });
+})
+export default class UserView extends React.PureComponent {
 
     render() {
         const { user, posts } = this.props;

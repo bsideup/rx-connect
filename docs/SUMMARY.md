@@ -4,8 +4,8 @@
 
 * [Introduction](README.md)
 * [Installation and Setup](setup.md)
-* [Usage](usage.md)
 * [Motivation](motivation.md)
+* [Usage with React](usage-with-react.md)
 
 ### Examples
 * [Timer](examples/timer.md)

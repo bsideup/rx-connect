@@ -10,23 +10,26 @@ import { fetchUsers } from "../actions/users";
 
 import Post from "./Post";
 
-@rxConnect((props$, state$, dispatch) => props$.map(({ location: { query: { page } } }) => page ? Number(page) : 1).distinctUntilChanged().flatMapLatest(page => {
-    return Rx.Observable
-        .combineLatest(
-            dispatch(fetchPosts({ page: page - 1 })),
-            dispatch(fetchUsers()).map(users => users::keyBy("id"))
-        )
-        .map(([ posts, users ]) => ({
-            totalPages: posts.total,
-            posts: posts.data
-                .map(post => ({
-                    ...post,
-                    user: users[post.userId]
-                }))
+@rxConnect((props$, state$, dispatch) => {
+    const page$ = props$.pluck("location", "query", "page").map(page => page ? Number(page) : 1).distinctUntilChanged().shareReplay(1);
+
+    const posts$ = page$.flatMapLatest(page =>
+        dispatch(fetchPosts({ page: page - 1 }))
+            .startWith(undefined)
+    );
+
+    const users$ = dispatch(fetchUsers())
+        .map(users => users::keyBy("id"));
+
+    return Rx.Observable.merge(
+        page$.map(page => ({ page })),
+
+        posts$.withLatestFrom(users$, (posts, users) => ({
+            totalPages: posts && posts.total,
+            posts: posts && posts.data.map(post => ({ ...post, user: users[post.userId] }))
         }))
-        .startWith({})
-        .map(props => ({ ...props, page }));
-}))
+    );
+})
 export default class PostsView extends React.PureComponent {
 
     render() {

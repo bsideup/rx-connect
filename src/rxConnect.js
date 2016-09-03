@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import Rx from "rx";
 import isPlainObject from 'lodash.isplainobject';
 
@@ -6,7 +6,7 @@ function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-export default function rxConnect(selectState) {
+export default function rxConnect(propsSelectorOrObservable) {
     return WrappedComponent => class RxConnector extends React.PureComponent {
 
         static displayName = 'RxConnector';
@@ -17,45 +17,51 @@ export default function rxConnect(selectState) {
 
         stateSubscription = undefined;
 
-        store = undefined;
-
-        state$ = undefined;
-
-        state = {
-            props: {}
-        };
+        state = {};
 
         shouldDebounce = false;
 
-        constructor(props, context) {
-            super(props, context);
+        _streamMutations() {
+            if (Rx.Observable.isObservable(propsSelectorOrObservable)) {
+                return propsSelectorOrObservable;
+            }
 
-            this.props$ = new Rx.BehaviorSubject(props);
+            this.props$ = new Rx.BehaviorSubject(this.props);
 
-            this.store = props.store || context.store;
+            const store = this.props.store || this.context.store;
 
-            if (this.store) {
-                this.state$ = Rx.Observable
-                    .create(observer => this.store.subscribe(() => observer.onNext(this.store.getState())))
-                    .startWith(this.store.getState())
+            if (store) {
+                const state$ = Rx.Observable
+                    .create(observer => store.subscribe(() => observer.onNext(store.getState())))
+                    .startWith(store.getState())
                     .distinctUntilChanged();
+
+                return propsSelectorOrObservable(this.props$, state$, store.dispatch);
+            } else {
+                return propsSelectorOrObservable(this.props$);
             }
         }
 
         componentWillMount() {
             this.shouldDebounce = false;
 
-            this.stateSubscription = selectState(this.props$, this.state$, this.store && this.store.dispatch)
-                .debounce(() => this.shouldDebounce ? Rx.Observable.interval(1) : Rx.Observable.of())
-                .subscribe(props => {
-                    if (!isPlainObject(props)) {
+            this.stateSubscription = this._streamMutations()
+                .scan((state, mutation) => {
+                    let change;
+                    if (isPlainObject(mutation)) {
+                        change = mutation;
+                    } else if (typeof mutation === "function") {
+                        change = mutation(state);
+                    } else {
                         // eslint-disable-next-line no-console
-                        console.error(`RxConnect stream *must* return plain object of properties. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, props);
-                        return;
+                        console.error(`Mutation must be a plain object or function. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutation);
+                        return state;
                     }
 
-                    this.setState({ props });
-                });
+                    return Object.assign({}, state, change);
+                }, {})
+                .debounce(() => this.shouldDebounce ? Rx.Observable.interval(0) : Rx.Observable.of())
+                .subscribe(::this.setState);
         }
 
         componentDidMount() {
@@ -67,13 +73,13 @@ export default function rxConnect(selectState) {
         }
 
         componentWillReceiveProps(nextProps) {
-            this.props$.onNext(nextProps);
+            this.props$ && this.props$.onNext(nextProps);
         }
 
         render() {
             return React.createElement(WrappedComponent, {
                 ...this.props,
-                ...this.state.props
+                ...this.state
             });
         }
     };

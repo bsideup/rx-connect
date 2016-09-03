@@ -35,7 +35,7 @@ What does it mean? The component is unpredictable. "Unpre... WAT?" - you might a
 ## RxConnect way
 RxConnect allows you to keep your component pure without having to deal with Redux's global state:
 ```javascript
-import { rxConnect, run } from "rx-connect";
+import { rxConnect, ofActions } from "rx-connect";
 import Rx from "rx";
 
 @rxConnect(() => {
@@ -43,11 +43,11 @@ import Rx from "rx";
         onUserName$: new Rx.Subject(),
     }
 
-    const reactions$ = Rx.Observable.merge(
+    return Rx.Observable.merge(
+        Rx.Observable::ofActions(actions),
+
         actions.onUserName$.startWith("").map(name => ({ name }))
     )
-
-    return run(reactions$, actions);
 })
 class MyView extends React.PureComponent {
     render() {

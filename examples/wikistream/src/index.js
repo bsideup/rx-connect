@@ -2,8 +2,10 @@ import "semantic-ui-css/semantic.css";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { rxConnect, run } from "rx-connect";
+import { rxConnect, ofActions } from "rx-connect";
 import Rx from "rx";
+
+import { ofWikiChanges } from "./wikiChangesObservable";
 
 const CHANNELS = [
     "en.wikipedia.org",
@@ -20,40 +22,29 @@ const CHANNELS = [
     };
 
     const channel$ = actions.changeChannel$
-        .map(([ channel ]) => channel)
+        .pluck(0)
         .startWith(CHANNELS[0])
-        .distinctUntilChanged();
+        .distinctUntilChanged()
+        .shareReplay(1);
 
     const active$ = Rx.Observable
         .merge(
-            actions.pause$.map(() => false),
-            actions.resume$.map(() => true),
+            actions.pause$.map(false),
+            actions.resume$.map(true),
         )
         .startWith(true)
         .shareReplay(1);
 
-    const reactions$ = Rx.Observable.merge(
+    return Rx.Observable.merge(
+        Rx.Observable::ofActions(actions),
+
         channel$.map(channel => ({ channel })),
 
         active$.map(active => ({ active })),
 
         channel$
             .flatMapLatest(channel =>
-                Rx.Observable
-                    .create(observer => {
-                        const socket = io.connect("https://stream.wikimedia.org:443/rc", {"force new connection": true});
-
-                        socket.on("connect", () => socket.emit("subscribe", channel));
-
-                        socket.on("change", data => observer.onNext(data) );
-
-                        return () => {
-                            socket.removeAllListeners("connect");
-                            socket.removeAllListeners("change");
-                            socket.disconnect();
-                            observer.onCompleted();
-                        }
-                    })
+                Rx.Observable::ofWikiChanges(channel)
                     .pausable(active$)
                     .sample(200) // Use sampling, otherwise Wikipedia might provide a lot of data :)
                     .scan((acc, next) => [next, ...acc].slice(0, 20), []) // Last 20
@@ -61,8 +52,6 @@ const CHANNELS = [
             )
             .map(items => ({ items }))
     );
-
-    return run(reactions$, actions);
 })
 class WikiStream extends React.PureComponent {
 

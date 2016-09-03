@@ -1,7 +1,9 @@
 import React from "react";
 import Rx from "rx";
 import { Link } from "react-router";
-import { rxConnect, run } from "rx-connect";
+import { rxConnect, ofActions } from "rx-connect";
+
+import Time from "./Time";
 
 import { logout } from "../actions/auth";
 
@@ -10,14 +12,13 @@ import { logout } from "../actions/auth";
         logout: () => dispatch(logout()),
     };
 
-    const reactions$ = Rx.Observable.merge(
-        state$
-            .map(({ user }) => user)
-            .distinctUntilChanged()
-            .map(user => ({ user })),
-    );
+    const user$ = state$.pluck("user").distinctUntilChanged();
 
-    return run(reactions$, actions);
+    return Rx.Observable.merge(
+        Rx.Observable::ofActions(actions),
+
+        user$.map(user => ({ user })),
+    );
 })
 export default class MainView extends React.PureComponent {
 
@@ -36,6 +37,9 @@ export default class MainView extends React.PureComponent {
                         <Link to="/" className="item" activeClassName="active" onlyActiveOnIndex={ true }>Home</Link>
 
                         <div className="right menu">
+                            <div className="ui simple borderless item">
+                                <Time />
+                            </div>
                             { user ? (
                                 <div className="ui simple dropdown item">
                                     <img className="ui avatar image" src="//placehold.it/60/A78CD2" />

@@ -1,6 +1,6 @@
 import React from "react";
 import Rx from "rx";
-import { rxConnect, run } from "rx-connect";
+import { rxConnect, ofActions } from "rx-connect";
 import { push } from "react-router-redux";
 
 import { login } from "../actions/auth";
@@ -10,19 +10,19 @@ import { login } from "../actions/auth";
         login$: new Rx.Subject()
     };
 
-    const reactions$ = Rx.Observable.merge(
+    return Rx.Observable.merge(
+        Rx.Observable::ofActions(actions),
+
         actions.login$
             .flatMapLatest(([ email, password ]) =>
                 dispatch(login(email, password))
-                .map(() => undefined) // No error in case of success
-                .doOnNext(() => dispatch(push("/"))) // TODO use side-effect library
-                .catch(error => Rx.Observable.of(error))
-                .map(error => ({ loading: false, error }))
-                .startWith(({ loading: true, error: undefined })) // Show preloader and clean an error before login's response
+                    .map(undefined) // No error in case of success
+                    .doOnNext(() => dispatch(push("/"))) // TODO use side-effect library
+                    .catch(error => Rx.Observable.of(error))
+                    .map(error => ({ loading: false, error }))
+                    .startWith(({ loading: true, error: undefined })) // Show preloader and clean an error before login's response
             )
     );
-
-    return run(reactions$, actions);
 })
 export default class LoginView extends React.PureComponent {
 

@@ -7,7 +7,7 @@ RxConnect is like [Redux](https://github.com/reactjs/redux)'s `@connect`, but wi
 npm install --save rx-connect rx
 ```
 
-## Motivation
+## Why?
 Replace this:
 
 ```javascript
@@ -16,7 +16,7 @@ Replace this:
         userId: state.userId,
         todos: state.todos
     }),
-    dispatch = bindActionCreators({ fetchData }, dispatch)
+    dispatch => bindActionCreators({ fetchData }, dispatch)
 )
 class TodoContainer extends React.Component {
 
@@ -88,22 +88,25 @@ with this:
 ```javascript
 @rxConnect((props$, state$, dispatch) => {
     const actions = {
-        onCompleted$: new Rx.Subject(),
+        onCompleted$: new Rx.Subject()
     }
 
-    const reactions$ = Rx.Observable
-        .combineLatest(
-            state$.pluck("userId").distinctUntilChanged(),
-            actions.onCompleted$
-                .map(([ completed ]) => completed)
-                .startWith(false)
-        )
-        .flatMapLatest(([ userId, completed ]) =>
-            dispatch(fetchData(userId, completed)).startWith(undefined)
-        )
-        .map(todos => ({ todos }))
+    const userId$ = state$.pluck("userId").distinctUntilChanged();
 
-    return run(reactions$, actions);
+    const completed$ = actions.onCompleted$.pluck(0).startWith(false);
+
+    const todos$ = Rx.Observable
+            .combineLatest(userId$, completed$)
+            .flatMapLatest(([ userId, completed ]) =>
+                dispatch(fetchData(userId, completed))
+                    .startWith(undefined)
+            );
+
+    return Rx.Observable.merge(
+        Rx.Observable::ofActions(actions),
+
+        todos$.map(todos => ({ todos }))
+    );
 })
 class TodoList extends React.PureComponent {
     render() {
@@ -126,6 +129,7 @@ class TodoList extends React.PureComponent {
     }
 }
 ```
+
 [](codepen://bsideup/EgxVKX?height=500)
 
 > **NB:** We use decorators from ES7, but it's not required. These two code blocks are completely identical:

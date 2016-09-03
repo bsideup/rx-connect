@@ -1,4 +1,4 @@
-# Search
+# Usage with React
 
 Handling user input efficiently can be challenging. We don't want to query our server while user is still typing, right? And, of course, we want to show only the latest searched result.
 
@@ -47,20 +47,18 @@ Now is the time to connect our component with outer world:
 ```javascript
 import { rxConnect, run } from "rx-connect";
 
-@rxConnect(() => {
-    return Rx.Observable.of({
-        articles: [
-            {
-                title: "Pure (programming Language)",
-                url: "https://en.wikipedia.org/wiki/Pure_(programming_language)"
-            },
-            {
-                title: "Reactive programming",
-                url: "https://en.wikipedia.org/wiki/Reactive_programming"
-            },
-        ]
-    })
-})
+@rxConnect(Rx.Observable.of({
+    articles: [
+        {
+            title: "Pure (programming Language)",
+            url: "https://en.wikipedia.org/wiki/Pure_(programming_language)"
+        },
+        {
+            title: "Reactive programming",
+            url: "https://en.wikipedia.org/wiki/Reactive_programming"
+        },
+    ]
+}))
 class MyView extends React.PureComponent {
     // ...
 }
@@ -79,7 +77,7 @@ Cool, but... search? User still can not interact with the component we created. 
 Thanks to RxJS we can do it easily:
 
 ```javascript
-import { rxConnect, run } from "rx-connect";
+import { rxConnect, ofActions } from "rx-connect";
 
 function searchWikipedia(search) {
     return Rx.DOM
@@ -94,13 +92,15 @@ function searchWikipedia(search) {
         search$: new Rx.Subject()
     }
 
-    const reactions$ = Rx.Observable.merge(
-        actions.search$
-            .flatMapLatest(([ search ]) => searchWikipedia(search))
-            .map(articles => ({ articles }))
-    )
+    const articles$ = actions.search$
+        .pluck(0) // select first passed argument
+        .flatMapLatest(searchWikipedia)
 
-    return run(reactions$, actions);
+    return Rx.Observable.merge(
+        Rx.Observable::ofActions(actions),
+
+        articles.map(articles => ({ articles }))
+    )
 })
 class MyView extends React.PureComponent {
     // ...
@@ -124,14 +124,20 @@ Did you spot that action's name ends with `$`? This is special notation in RxJS 
 
 But actions themselves does nothing - we should react on them with reactions:
 ```javascript
-const reactions$ = Rx.Observable.merge(
-    actions.search$
-        .flatMapLatest(([ search ]) => searchWikipedia(search))
-        .map(articles => ({ articles }))
+const articles$ = actions.search$
+    .pluck(0) // select first passed argument
+    .flatMapLatest(searchWikipedia)
+```
+
+Our `reactions$` stream has only one reaction - on search, but there might be many of them, this is why we merge all of them in a single stream together with actions:
+```javascript
+return Rx.Observable.merge(
+    Rx.Observable::ofActions(actions),
+
+    articles.map(articles => ({ articles }))
 )
 ```
 
-Our `reactions$` stream has only one reaction - on search, but there might be many of them, this is why we merge all of them in a single stream.
 > **NB:**
 > ```javascript
 .map(articles => ({ articles }))
@@ -147,8 +153,6 @@ Our `reactions$` stream has only one reaction - on search, but there might be ma
 
 Our search reaction returns an array of articles as `articles` property for each new search.
 
-As the last thing, we call `run` method, it will return an observable of the state by connecting reactions to actions.
-
 ## Reactive interactive component with API limitations in mind
 Currently we query API each time user enters something to the field. It means that if user will type very fast he will send too many requests to the server.
 
@@ -156,12 +160,10 @@ User types "re" - request is sent. He types "rea" - request is sent. He types "r
 
 Slightly modify your reaction with one more operator:
 ```javascript
-const reactions$ = Rx.Observable.merge(
-    actions.search$
-        .debounce(500) // <-- RxJS FTW!
-        .flatMapLatest(([ search ]) => searchWikipedia(search))
-        .map(articles => ({ articles }))
-)
+actions.search$
+    .debounce(500) // <-- RxJS FTW!
+    .pluck(0)
+    .flatMapLatest(searchWikipedia)
 ```
 [](codepen://bsideup/gwOLdK?height=500)
 
@@ -175,14 +177,12 @@ Type something to the search field. Now, once you see the results, type somethin
 Remember I said that we combine streams of data, so your component is reactive? Thanks to it, cleaning of previous results is as simple as pushing undefined object once we send a search request:
 
 ```javascript
-const reactions$ = Rx.Observable.merge(
-    actions.search$
-        .debounce(500)
-        .flatMapLatest(([ search ]) =>
-            searchWikipedia(search)
-                .startWith(undefined) // <-- clear articles before we receive the response
-        )
-        .map(articles => ({ articles }))
-)
+actions.search$
+    .debounce(500)
+    .pluck(0)
+    .flatMapLatest(search =>
+        searchWikipedia(search)
+            .startWith(undefined) // <-- clear articles before we receive the response
+    )
 ```
 [](codepen://bsideup/mAbaom?height=500)
