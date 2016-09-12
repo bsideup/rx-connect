@@ -10,7 +10,7 @@
     "build:umd": "cross-env NODE_ENV=development webpack src/index.js dist/rx-connect.js",
     "build:umd:min": "cross-env NODE_ENV=production webpack src/index.js dist/rx-connect.min.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
-    "test": "jest",
+    "test": "npm run lint && jest",
     "prepublish": "npm run clean && npm run test && npm run build",
     "examples:build:blog": "cd examples/blog/ && cross-env NODE_ENV=production npm run build",
     "examples:build:wikistream": "cd examples/wikistream/ && cross-env NODE_ENV=production npm run build",
