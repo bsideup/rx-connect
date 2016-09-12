@@ -1,7 +1,9 @@
 RxConnect 
 ========
-[![NPM version](https://img.shields.io/npm/v/rx-connect.svg)](https://npmjs.com/package/rx-connect) [![Build Status](https://travis-ci.org/bsideup/rx-connect.svg?branch=master)](https://travis-ci.org/bsideup/rx-connect)
-
+[![Gitter](https://badges.gitter.im/bsideup/rx-connect.svg)](https://gitter.im/bsideup/rx-connect)
+[![NPM version](https://img.shields.io/npm/v/rx-connect.svg)](https://npmjs.com/package/rx-connect)
+[![Build Status](https://travis-ci.org/bsideup/rx-connect.svg?branch=master)](https://travis-ci.org/bsideup/rx-connect)
+[![license](https://img.shields.io/github/license/bsideup/rx-connect.svg?maxAge=2592000)]()
 
 RxConnect is like [Redux](https://github.com/reactjs/redux)'s `@connect`, but with all the power of [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
