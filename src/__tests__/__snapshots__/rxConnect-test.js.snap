@@ -1,0 +1,52 @@
+exports[`test accepts function-based mutations 1`] = `
+<div>
+  123
+</div>
+`;
+
+exports[`test ignores not connect properties 1`] = `<div />`;
+
+exports[`test passes children automatically 1`] = `
+<div>
+  Hello, RxConnect!
+</div>
+`;
+
+exports[`test passes properties as Observable 1`] = `
+<div>
+  123
+</div>
+`;
+
+exports[`test receives new props 1`] = `
+<div>
+  15
+</div>
+`;
+
+exports[`test receives new props 2`] = `
+<div>
+  15
+</div>
+`;
+
+exports[`test receives new props 3`] = `
+<div>
+  -15
+</div>
+`;
+
+exports[`test throws an error if mutation is neither an object or function 1`] = `
+Array [
+  "Mutation must be a plain object or function. Check rxConnect of Component. Got: ",
+  Array [
+    123
+  ]
+]
+`;
+
+exports[`test works with Observable 1`] = `
+<div>
+  123
+</div>
+`;

@@ -1,11 +1,14 @@
 import React from "react";
 import Rx from "rx";
+import { connect } from "react-redux";
+import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { rxConnect, ofActions } from "rx-connect";
 import { push } from "react-router-redux";
 
 import { login } from "../actions/auth";
 
-@rxConnect((props$, state$, dispatch) => {
+@connect(null, wrapActionCreators({ login, push }))
+@rxConnect(props$ => {
     const actions = {
         login$: new Rx.Subject()
     };
@@ -14,10 +17,11 @@ import { login } from "../actions/auth";
         Rx.Observable::ofActions(actions),
 
         actions.login$
-            .flatMapLatest(([ email, password ]) =>
-                dispatch(login(email, password))
+            .withLatestFrom(props$)
+            .flatMapLatest(([[ email, password ], { login, push }]) =>
+                login(email, password)
                     .map(undefined) // No error in case of success
-                    .doOnNext(() => dispatch(push("/"))) // TODO use side-effect library
+                    .doOnNext(() => push("/")) // TODO use side-effect library
                     .catch(error => Rx.Observable.of(error))
                     .map(error => ({ loading: false, error }))
                     .startWith(({ loading: true, error: undefined })) // Show preloader and clean an error before login's response

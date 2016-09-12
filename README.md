@@ -1,84 +1,46 @@
-RxConnect v{{ book.version }}
+RxConnect 
 ========
+[![NPM version](https://img.shields.io/npm/v/rx-connect.svg)](https://npmjs.com/package/rx-connect) [![Build Status](https://travis-ci.org/bsideup/rx-connect.svg?branch=master)](https://travis-ci.org/bsideup/rx-connect)
+
 
 RxConnect is like [Redux](https://github.com/reactjs/redux)'s `@connect`, but with all the power of [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
 ```
-npm install --save rx-connect rx
+npm install --save rx-connect
 ```
+
+<!--remove-->
+## Documentation
+You can find the latest documentation here: http://bsideup.gitbooks.io/rxconnect/content/
+<!--endremove-->
 
 ## Why?
 Replace this:
 
 ```javascript
-@connect(
-    state => ({
-        userId: state.userId,
-        todos: state.todos
-    }),
-    dispatch => bindActionCreators({ fetchData }, dispatch)
-)
-class TodoContainer extends React.Component {
+class Timer extends React.Component {
+    
+    constructor(props) {
+        super(props);
 
-    state = {
-        completed: false
-    };
-
-    cancelFetch = undefined;
-
-    fetchData(props, completed) {
-        if (this.cancelFetch) {
-            this.cancelFetch();
+        this.state = {
+            counter: 0
         }
-
-        this.cancelFetch = props.fetchData(props.userId, completed);
     }
 
     componentWillMount() {
-        this.fetchData(this.props, state.completed);
+        this.intervalRef = setInterval(
+            () => this.setState(state => ({ counter: state.counter + 1 })),
+            1000
+        )
     }
 
     componentWillUnmount() {
-        if (this.cancelFetch) {
-            this.cancelFetch();
-        }
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-        if (this.props.userId !== nextProps.userId ||
-            this.state.completed !== nextState.completed
-        ) {
-            this.fetchData(nextProps, nextState.completed);
-        }
-    }
-
-    onCompleted(completed) {
-        this.setState({ completed });
+        clearInterval(this.intervalRef)
     }
 
     render() {
-        return <TodoList todos={ this.props.todos } onCompleted={::this.onCompleted} />
-    }
-}
-
-class TodoList extends React.PureComponent {
-    render() {
-        const { todos, onCompleted } = this.props;
-        return (
-            <div>
-                <label>
-                    <input type="checkbox" onChange={ e => onCompleted(e.target.checked) } />
-                    completed only
-                </label>
-                { todos ? (
-                    <ul>
-                        { todos.map(todo => <li key={todo.id}>{todo.title}</li>) }
-                    </ul>
-                ) : (
-                    <p>Loading...</p>
-                ) }
-            </div>
-        )
+        return <div>{ this.state.counter }</div>
     }
 }
 ```
@@ -86,53 +48,20 @@ class TodoList extends React.PureComponent {
 with this:
 
 ```javascript
-@rxConnect((props$, state$, dispatch) => {
-    const actions = {
-        onCompleted$: new Rx.Subject()
-    }
+import { rxConnect } from "rx-connect";
 
-    const userId$ = state$.pluck("userId").distinctUntilChanged();
-
-    const completed$ = actions.onCompleted$.pluck(0).startWith(false);
-
-    const todos$ = Rx.Observable
-            .combineLatest(userId$, completed$)
-            .flatMapLatest(([ userId, completed ]) =>
-                dispatch(fetchData(userId, completed))
-                    .startWith(undefined)
-            );
-
-    return Rx.Observable.merge(
-        Rx.Observable::ofActions(actions),
-
-        todos$.map(todos => ({ todos }))
-    );
-})
-class TodoList extends React.PureComponent {
+@rxConnect(
+    Rx.Observable.timer(0, 1000).timestamp()
+)
+class Timer extends React.PureComponent {
     render() {
-        const { todos, onCompleted } = this.props;
-        return (
-            <div>
-                <label>
-                    <input type="checkbox" onChange={ e => onCompleted(e.target.checked) } />
-                    completed only
-                </label>
-                { todos ? (
-                    <ul>
-                        { todos.map(todo => <li key={todo.id}>{todo.title}</li>) }
-                    </ul>
-                ) : (
-                    <p>Loading...</p>
-                ) }
-            </div>
-        )
+        return <div>{ this.props.value }</div>
     }
 }
 ```
+[](codepen://bsideup/wzvGAE?height=300)
 
-[](codepen://bsideup/EgxVKX?height=500)
-
-> **NB:** We use decorators from ES7, but it's not required. These two code blocks are completely identical:
+> **NB:** We use decorators, but it's not required. These two code blocks are completely identical:
 > ```javascript
 @rxConnect(...)
 export class MyView extends React.Component {

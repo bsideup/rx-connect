@@ -1,0 +1,20 @@
+exports[`test creates FuncSubject-like action 1`] = `
+Array [
+  1,
+  2,
+  3
+]
+`;
+
+exports[`test passes non-observables as is 1`] = `
+Object {
+  "a": 123,
+  "b": "hi!"
+}
+`;
+
+exports[`test strips dollar sign from Observable property names 1`] = `
+Object {
+  "a": [Function anonymous]
+}
+`;

@@ -1,25 +1,17 @@
 import React from "react";
-import Rx from "rx";
+import { connect } from "react-redux";
+import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { Link } from "react-router";
-import { rxConnect, ofActions } from "rx-connect";
+import { rxConnect } from "rx-connect";
 
 import Time from "./Time";
 
 import { logout } from "../actions/auth";
 
-@rxConnect((props$, state$, dispatch) => {
-    const actions = {
-        logout: () => dispatch(logout()),
-    };
-
-    const user$ = state$.pluck("user").distinctUntilChanged();
-
-    return Rx.Observable.merge(
-        Rx.Observable::ofActions(actions),
-
-        user$.map(user => ({ user })),
-    );
-})
+@connect(
+    ({ user }) => ({ user }),
+    wrapActionCreators({ logout })
+)
 export default class MainView extends React.PureComponent {
 
     render() {

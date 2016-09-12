@@ -1,5 +1,7 @@
 import React from "react";
 import Rx from "rx";
+import { connect } from "react-redux";
+import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { rxConnect } from "rx-connect";
 import { Link } from "react-router";
 
@@ -8,14 +10,15 @@ import { hashCode, toHex } from "../utils";
 import { fetchUser } from "../actions/users";
 import { fetchPosts } from "../actions/posts";
 
-@rxConnect((props$, state$, dispatch) => {
-    const userId$ = props$.pluck("params", "userId").distinctUntilChanged().shareReplay(1);
+@connect(undefined, wrapActionCreators({ fetchUser, fetchPosts }))
+@rxConnect(props$ => {
+    const userId$ = props$.pluck("params", "userId").distinctUntilChanged();
 
-    return userId$.flatMapLatest(userId => {
-        const user$ = dispatch(fetchUser(userId))
+    return userId$.withLatestFrom(props$).flatMapLatest(([userId, { fetchUser, fetchPosts }]) => {
+        const user$ = fetchUser(userId)
             .catch(Rx.Observable.of(null));
 
-        const postsByUser$ = dispatch(fetchPosts({ userId }))
+        const postsByUser$ = fetchPosts({ userId })
             .pluck("data")
             .catch(Rx.Observable.of(null));
 

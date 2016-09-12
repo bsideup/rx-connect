@@ -6,8 +6,13 @@ Lets implement it with React only:
 
 ```javascript
 class Timer extends React.Component {
-    state = {
-        counter: 0
+
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            counter: 0
+        }
     }
 
     componentWillMount() {
@@ -29,11 +34,14 @@ So, we have to make sure that we clear the interval to avoid it:
 
 ```javascript
 class Timer extends React.Component {
-    state = {
-        counter: 0
-    }
 
-    intervalRef = undefined;
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            counter: 0
+        }
+    }
 
     componentWillMount() {
         this.intervalRef = setInterval(
@@ -43,7 +51,7 @@ class Timer extends React.Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.intervalRef);
+        clearInterval(this.intervalRef)
     }
 
     render() {
@@ -61,19 +69,28 @@ The same can be implemented with one-liner in RxConnect:
 import { rxConnect } from "rx-connect";
 
 @rxConnect(
-    Rx.Observable.timer(0, 1000).map(counter => ({ counter }))
+    Rx.Observable.timer(0, 1000).timestamp()
 )
 class Timer extends React.PureComponent {
     render() {
-        return <div>{ this.props.counter }</div>
+        return <div>{ this.props.value }</div>
     }
 }
+```
+
+or even:
+```javascript
+import { rxConnect } from "rx-connect";
+
+const Timer = rxConnect(
+    Rx.Observable.timer(0, 1000).timestamp()
+)(({ value }) => <div>{ value }</div>)
 ```
 
 [](codepen://bsideup/wzvGAE?height=300)
 
 #### Benefits:
-* No need to handle subscription manually (error prone!)
+* No need to handle subscription manually (error-prone!)
 * Component is pure
 * Code is simple and does one thing
 

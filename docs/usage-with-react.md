@@ -77,7 +77,7 @@ Cool, but... search? User still can not interact with the component we created. 
 Thanks to RxJS we can do it easily:
 
 ```javascript
-import { rxConnect, ofActions } from "rx-connect";
+import { rxConnect, mapActionCreators } from "rx-connect";
 
 function searchWikipedia(search) {
     return Rx.DOM
@@ -97,9 +97,9 @@ function searchWikipedia(search) {
         .flatMapLatest(searchWikipedia)
 
     return Rx.Observable.merge(
-        Rx.Observable::ofActions(actions),
+        mapActionCreators(actions),
 
-        articles.map(articles => ({ articles }))
+        articles$.map(articles => ({ articles }))
     )
 })
 class MyView extends React.PureComponent {
@@ -132,9 +132,9 @@ const articles$ = actions.search$
 Right now we have only one reaction - on search, but there might be many of them, this is why we merge all of them in a single stream together with actions:
 ```javascript
 return Rx.Observable.merge(
-    Rx.Observable::ofActions(actions),
+    mapActionCreators(actions),
 
-    articles.map(articles => ({ articles }))
+    articles$.map(articles => ({ articles }))
 )
 ```
 

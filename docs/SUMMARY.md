@@ -10,6 +10,7 @@
 
 ### Examples
 * [Timer](examples/timer.md)
+* [TODOs](examples/todos.md)
 * [Blog](examples/blog.md)
 * [Wikipedia stream](examples/wikistream.md)
 

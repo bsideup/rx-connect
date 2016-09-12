@@ -3,8 +3,13 @@ Managing state in React applications is challenging, so people use predictable s
 
 ```javascript
 class MyView extends React.Component {
-    state = {
-        name: ""
+    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: ""
+        }
     }
 
     render() {

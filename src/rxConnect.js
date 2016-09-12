@@ -1,67 +1,52 @@
 import React from "react";
 import Rx from "rx";
-import isPlainObject from 'lodash.isplainobject';
+import isPlainObject from "lodash.isplainobject";
 
 function getDisplayName(WrappedComponent) {
-    return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+    return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export default function rxConnect(propsSelectorOrObservable) {
+export default function rxConnect(selectorOrObservable) {
     return WrappedComponent => class RxConnector extends React.PureComponent {
 
-        static displayName = 'RxConnector';
-
-        static contextTypes = {
-            store: React.PropTypes.object
-        };
+        static displayName = "RxConnector";
 
         stateSubscription = undefined;
 
-        state = {};
-
         shouldDebounce = false;
 
-        _streamMutations() {
-            if (Rx.Observable.isObservable(propsSelectorOrObservable)) {
-                return propsSelectorOrObservable;
-            }
+        subProps = {};
 
-            this.props$ = new Rx.BehaviorSubject(this.props);
+        constructor(props) {
+            super(props);
 
-            const store = this.props.store || this.context.store;
-
-            if (store) {
-                const state$ = Rx.Observable
-                    .create(observer => store.subscribe(() => observer.onNext(store.getState())))
-                    .startWith(store.getState())
-                    .distinctUntilChanged();
-
-                return propsSelectorOrObservable(this.props$, state$, store.dispatch);
-            } else {
-                return propsSelectorOrObservable(this.props$);
-            }
+            this.props$ = new Rx.BehaviorSubject(props);
         }
 
         componentWillMount() {
             this.shouldDebounce = false;
 
-            this.stateSubscription = this._streamMutations()
+            const mutations$ = Rx.Observable.isObservable(selectorOrObservable) ? selectorOrObservable : selectorOrObservable(this.props$);
+
+            this.stateSubscription = mutations$
                 .scan((state, mutation) => {
-                    let change;
                     if (isPlainObject(mutation)) {
-                        change = mutation;
-                    } else if (typeof mutation === "function") {
-                        change = mutation(state);
-                    } else {
-                        // eslint-disable-next-line no-console
-                        console.error(`Mutation must be a plain object or function. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutation);
-                        return state;
+                        return Object.assign({}, state, mutation);
                     }
 
-                    return Object.assign({}, state, change);
+                    if (typeof mutation === "function") {
+                        return mutation(state);
+                    }
+
+                    // eslint-disable-next-line no-console
+                    console.error(`Mutation must be a plain object or function. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutation);
+                    return state;
                 }, {})
                 .debounce(() => this.shouldDebounce ? Rx.Observable.interval(0) : Rx.Observable.of())
-                .subscribe(::this.setState);
+                .subscribe(state => {
+                    this.subProps = state;
+                    this.forceUpdate();
+                });
         }
 
         componentDidMount() {
@@ -73,14 +58,11 @@ export default function rxConnect(propsSelectorOrObservable) {
         }
 
         componentWillReceiveProps(nextProps) {
-            this.props$ && this.props$.onNext(nextProps);
+            this.props$.onNext(nextProps);
         }
 
         render() {
-            return React.createElement(WrappedComponent, {
-                ...this.props,
-                ...this.state
-            });
+            return React.createElement(WrappedComponent, this.subProps, this.props.children);
         }
     };
 }

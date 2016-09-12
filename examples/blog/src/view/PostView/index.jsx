@@ -1,5 +1,7 @@
 import React from "react";
 import Rx from "rx";
+import { connect } from "react-redux";
+import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { Link } from "react-router";
 import { rxConnect } from "rx-connect";
 
@@ -10,18 +12,19 @@ import { fetchUser } from "../../actions/users";
 
 import Comments from "./Comments";
 
-@rxConnect((props$, state$, dispatch) => {
+@connect(undefined, wrapActionCreators({ fetchComments, fetchPost, fetchUser }))
+@rxConnect(props$ => {
     const postId$ = props$.pluck("params", "postId").distinctUntilChanged();
 
-    return postId$.flatMapLatest(postId => {
-        const post$ = dispatch(fetchPost(postId))
+    return postId$.withLatestFrom(props$).flatMapLatest(([ postId, { fetchComments, fetchPost, fetchUser }]) => {
+        const post$ = fetchPost(postId)
             .flatMapLatest(post =>
-                dispatch(fetchUser(post.userId))
+                fetchUser(post.userId)
                     .map(user => ({ ...post, user }))
             )
             .catch(Rx.Observable.of(null));
 
-        const comments$ = dispatch(fetchComments(postId))
+        const comments$ = fetchComments(postId)
             .catch(Rx.Observable.of(null));
 
         // Fetch comments together with post's data to avoid flickering
