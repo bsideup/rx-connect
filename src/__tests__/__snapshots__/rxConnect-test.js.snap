@@ -6,6 +6,18 @@ exports[`test accepts function-based mutations 1`] = `
 
 exports[`test ignores not connect properties 1`] = `<div />`;
 
+exports[`test noDebounce 1`] = `
+<div>
+  0
+</div>
+`;
+
+exports[`test noDebounce 2`] = `
+<div>
+  1
+</div>
+`;
+
 exports[`test passes children automatically 1`] = `
 <div>
   Hello, RxConnect!
