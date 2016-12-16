@@ -93,6 +93,28 @@ test("receives new props", async () => {
     expect(parent.toJSON()).toMatchSnapshot();
 });
 
+test("noDebounce", () => {
+    const Component = rxConnect(props$ => props$, { noDebounce: true })(({ i }) => <div>{i}</div>);
+
+    class Parent extends React.Component {
+        state = {
+            i: 0
+        };
+
+        render() {
+            return <Component {...this.state} />
+        }
+    }
+
+    const parent = renderer.create(<Parent />);
+
+    expect(parent.toJSON()).toMatchSnapshot();
+
+    parent.getInstance().setState({ i: 1 });
+
+    expect(parent.toJSON()).toMatchSnapshot();
+})
+
 test("handles unmount", () => {
     const props$ = new Rx.ReplaySubject();
 

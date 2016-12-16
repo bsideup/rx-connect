@@ -2,11 +2,15 @@ import React from "react";
 import Rx from "rx";
 import isPlainObject from "lodash.isplainobject";
 
+const DEFAULT_OPTIONS = {
+    noDebounce: false
+};
+
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-export default function rxConnect(selectorOrObservable) {
+export default function rxConnect(selectorOrObservable, options = DEFAULT_OPTIONS) {
     return WrappedComponent => class RxConnector extends React.PureComponent {
 
         static displayName = "RxConnector";
@@ -42,7 +46,7 @@ export default function rxConnect(selectorOrObservable) {
                     console.error(`Mutation must be a plain object or function. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutation);
                     return state;
                 }, {})
-                .debounce(() => this.shouldDebounce ? Rx.Observable.interval(0) : Rx.Observable.of())
+                .debounce(() => (!options.noDebounce && this.shouldDebounce) ? Rx.Observable.interval(0) : Rx.Observable.of())
                 .subscribe(state => {
                     this.subProps = state;
                     this.forceUpdate();
