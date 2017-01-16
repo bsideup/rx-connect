@@ -52,9 +52,23 @@ exports[`test throws an error if mutation is neither an object or function 1`] =
 Array [
   "Mutation must be a plain object or function. Check rxConnect of Component. Got: ",
   Array [
-    123
-  ]
+    123,
+  ],
 ]
+`;
+
+exports[`test works with Array 1`] = `
+<div>
+  123
+  bar
+</div>
+`;
+
+exports[`test works with Generator 1`] = `
+<div>
+  123
+  bar
+</div>
 `;
 
 exports[`test works with Observable 1`] = `

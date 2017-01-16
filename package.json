@@ -26,7 +26,10 @@
   "author": "Sergei Egorov <bsideup@gmail.com>",
   "homepage": "https://github.com/bsideup/rx-connect",
   "license": "MIT",
-  "repository": "bsideup/rx-connect",
+  "repository": {
+    "url": "git@github.com:bsideup/rx-connect.git",
+    "type": "git"
+  },
   "bugs": {
     "url": "https://github.com/bsideup/rx-connect/issues"
   },
@@ -53,15 +56,16 @@
     "cross-env": "^2.0.0",
     "eslint": "^3.2.2",
     "eslint-loader": "^1.5.0",
-    "eslint-plugin-react": "^6.2.0",
+    "eslint-plugin-react": "^6.4.1",
     "gh-pages": "^0.11.0",
-    "jest-cli": "^15.1.1",
+    "jest-cli": "^18.0.0",
     "react": "^15.3.0",
     "react-redux": "^4.4.5",
     "react-test-renderer": "^15.3.1",
     "redux": "^3.5.2",
     "rimraf": "^2.5.4",
     "rx": "^4.1.0",
+    "rxjs": "^5.0.3",
     "webpack": "^1.13.1",
     "yargs": "^4.8.1"
   },
@@ -70,6 +74,7 @@
     "rx": "^4.1.0"
   },
   "dependencies": {
-    "lodash.isplainobject": "^4.0.6"
+    "lodash.isplainobject": "^4.0.6",
+    "symbol-observable": "^1.0.4"
   }
 }

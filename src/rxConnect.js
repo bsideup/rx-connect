@@ -1,6 +1,7 @@
 import React from "react";
-import Rx from "rx";
 import isPlainObject from "lodash.isplainobject";
+import Rx from "./observable";
+import ObservableSymbol from "symbol-observable";
 
 const DEFAULT_OPTIONS = {
     noDebounce: false
@@ -9,8 +10,19 @@ const DEFAULT_OPTIONS = {
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
+function isObservable(obj) {
+    if (!obj) {
+        return false;
+    }
 
-export default function rxConnect(selectorOrObservable, options = DEFAULT_OPTIONS) {
+    if (Rx.Observable.isObservable) {
+        return Rx.Observable.isObservable(obj);
+    }
+
+    return typeof obj[ObservableSymbol] === 'function';
+}
+
+export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
     return WrappedComponent => class RxConnector extends React.PureComponent {
 
         static displayName = "RxConnector";
@@ -30,7 +42,21 @@ export default function rxConnect(selectorOrObservable, options = DEFAULT_OPTION
         componentWillMount() {
             this.shouldDebounce = false;
 
-            const mutations$ = Rx.Observable.isObservable(selectorOrObservable) ? selectorOrObservable : selectorOrObservable(this.props$);
+            let mutations$ = selector;
+            if(!isObservable(mutations$)) {
+                mutations$ = selector(this.props$);
+            }
+
+            if(!isObservable(mutations$)) {
+                    // eslint-disable-next-line no-undef
+                if (typeof mutations$[Symbol.iterator] === 'function') {
+                    mutations$ = Rx.Observable.merge(...mutations$);
+                } else {
+                    // eslint-disable-next-line no-console
+                    console.error(`Selector must return an Observable, an iterator of observables. Got: `, mutations$);
+                    return;
+                }
+            }
 
             this.stateSubscription = mutations$
                 .scan((state, mutation) => {
@@ -62,7 +88,11 @@ export default function rxConnect(selectorOrObservable, options = DEFAULT_OPTION
         }
 
         componentWillReceiveProps(nextProps) {
-            this.props$.onNext(nextProps);
+            if (this.props$.onNext) {
+                this.props$.onNext(nextProps);
+            } else {
+                this.props$.next(nextProps);
+            }
         }
 
         render() {

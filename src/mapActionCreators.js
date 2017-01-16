@@ -1,4 +1,4 @@
-import Rx from "rx";
+import Rx from "./observable";
 
 export function ofActions(actions) {
     return this.of(
@@ -8,7 +8,13 @@ export function ofActions(actions) {
                     const action = actions[key];
 
                     if (key.endsWith("$")) {
-                        result[key.slice(0, -1)] = (...args) => action.onNext(args);
+                        result[key.slice(0, -1)] = (...args) => {
+                            if(action.onNext) {
+                                action.onNext(args);
+                            } else {
+                                action.next(args);
+                            }
+                        };
                     } else {
                         result[key] = action;
                     }

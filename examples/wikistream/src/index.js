@@ -1,9 +1,10 @@
 import "semantic-ui-css/semantic.css";
+import "babel-polyfill";
 
 import React from "react";
 import ReactDOM from "react-dom";
 import { rxConnect, ofActions } from "rx-connect";
-import Rx from "rx";
+import Rx from "rxjs";
 
 import { ofWikiChanges } from "./wikiChangesObservable";
 
@@ -14,44 +15,44 @@ const CHANNELS = [
     "commons.wikimedia.org",
 ];
 
-@rxConnect(() => {
+@rxConnect(function* () {
     const actions = {
         changeChannel$: new Rx.Subject(),
         pause$: new Rx.Subject(),
         resume$: new Rx.Subject(),
     };
 
+    yield Rx.Observable::ofActions(actions);
+
     const channel$ = actions.changeChannel$
         .pluck(0)
         .startWith(CHANNELS[0])
         .distinctUntilChanged()
-        .shareReplay(1);
+        .publishReplay(1)
+        .refCount();
+
+    yield channel$.map(channel => ({ channel }));
 
     const active$ = Rx.Observable
         .merge(
-            actions.pause$.map(false),
-            actions.resume$.map(true),
+            actions.pause$.mapTo(false),
+            actions.resume$.mapTo(true),
         )
         .startWith(true)
-        .shareReplay(1);
+        .publishReplay(1)
+        .refCount();
 
-    return Rx.Observable.merge(
-        Rx.Observable::ofActions(actions),
+    yield active$.map(active => ({ active }));
 
-        channel$.map(channel => ({ channel })),
-
-        active$.map(active => ({ active })),
-
-        channel$
-            .flatMapLatest(channel =>
-                Rx.Observable::ofWikiChanges(channel)
-                    .pausable(active$)
-                    .sample(200) // Use sampling, otherwise Wikipedia might provide a lot of data :)
-                    .scan((acc, next) => [next, ...acc].slice(0, 20), []) // Last 20
-                    .startWith(undefined)
-            )
-            .map(items => ({ items }))
-    );
+    yield channel$
+        .switchMap(channel =>
+            Rx.Observable::ofWikiChanges(channel)
+                .let(o => active$.switchMap(active => active ? o : Rx.Observable.never()))
+                .sample(Rx.Observable.interval(200)) // Use sampling, otherwise Wikipedia might provide a lot of data :)
+                .scan((acc, next) => [next, ...acc].slice(0, 20), []) // Last 20
+                .startWith(undefined)
+        )
+        .map(items => ({ items }));
 })
 class WikiStream extends React.PureComponent {
 

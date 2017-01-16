@@ -14,6 +14,32 @@ test("works with Observable", () => {
     expect(tree).toMatchSnapshot();
 });
 
+test("works with Array", () => {
+    const props$ = () => [
+        Rx.Observable.of({ a: 123 }),
+        Rx.Observable.of({ foo: "bar" }),
+    ];
+
+    const Component = rxConnect(props$)(({ a, foo }) => <div>{a}{foo}</div>);
+
+    const tree = renderer.create(<Component />).toJSON();
+
+    expect(tree).toMatchSnapshot();
+});
+
+test("works with Generator", () => {
+    const props$ = function* () {
+        yield Rx.Observable.of({ a: 123 });
+        yield Rx.Observable.of({ foo: "bar" });
+    };
+
+    const Component = rxConnect(props$)(({ a, foo }) => <div>{a}{foo}</div>);
+
+    const tree = renderer.create(<Component />).toJSON();
+
+    expect(tree).toMatchSnapshot();
+});
+
 test("passes properties as Observable", () => {
     const connector = props$ => props$.pluck("someProp").map(a => ({ a }));
 

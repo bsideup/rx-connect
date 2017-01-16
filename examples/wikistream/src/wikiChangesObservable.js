@@ -4,13 +4,13 @@ export function ofWikiChanges(channel) {
 
         socket.on("connect", () => socket.emit("subscribe", channel));
 
-        socket.on("change", data => observer.onNext(data));
+        socket.on("change", data => observer.next(data));
 
         return () => {
             socket.removeAllListeners("connect");
             socket.removeAllListeners("change");
             socket.disconnect();
-            observer.onCompleted();
+            observer.complete();
         }
     });
 }
