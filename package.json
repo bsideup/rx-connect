@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf lib dist",
     "lint": "eslint src",
-    "build:lib": "babel src --out-dir lib",
+    "build:lib": "babel src --ignore __tests__ --out-dir lib",
     "build:umd": "cross-env NODE_ENV=development webpack src/index.js dist/rx-connect.js",
     "build:umd:min": "cross-env NODE_ENV=production webpack src/index.js dist/rx-connect.min.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",

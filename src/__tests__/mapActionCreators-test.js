@@ -1,30 +1,46 @@
-import Rx from "rx";
-import { mapActionCreators } from "../";
+import { mapActionCreators, rxConnect } from "../";
+import rx5Adapter from "../rx5Adapter";
+import { getAdapter } from "../rxConnect";
 
-test("passes non-observables as is", async () => {
-    const props = await mapActionCreators({ a: 123, b: "hi!" }).toPromise();
+const suites = {
+    "RxJS 4": () => {},
+    "RxJS 5": () => rxConnect.adapter = rx5Adapter
+}
 
-    expect(props).toMatchSnapshot();
-});
+Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
+    let Rx;
+    beforeEach(() => {
+        initializer();
+        const adapter = getAdapter();
+        Rx = adapter.Rx;
+    });
 
-test("strips dollar sign from Observable property names", async () => {
-    const actions = {
-        a$: new Rx.Subject()
-    };
+    it("passes non-observables as is", async () => {
+        const props = await mapActionCreators({ a: 123, b: "hi!" }).toPromise();
 
-    const props = await mapActionCreators(actions).toPromise();
+        expect(props).toMatchSnapshot();
+    });
 
-    expect(props).toMatchSnapshot();
-});
+    it("strips dollar sign from Observable property names", async () => {
+        const actions = {
+            a$: new Rx.Subject()
+        };
 
-test("creates FuncSubject-like action", async () => {
-    const actions = {
-        a$: new Rx.BehaviorSubject()
-    };
+        const props = await mapActionCreators(actions).toPromise();
 
-    const props = await mapActionCreators(actions).toPromise();
+        expect(props).toMatchSnapshot();
+    });
 
-    props.a(1, 2, 3);
+    it("creates FuncSubject-like action", async () => {
+        const actions = {
+            a$: new Rx.BehaviorSubject()
+        };
 
-    expect(actions.a$.getValue()).toMatchSnapshot();
-});
+        const props = await mapActionCreators(actions).toPromise();
+
+        props.a(1, 2, 3);
+
+        expect(actions.a$.getValue()).toMatchSnapshot();
+    });
+
+}));

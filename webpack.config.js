@@ -17,10 +17,18 @@ var rxExternal = {
   amd: 'rx'
 }
 
+var rxjsExternal = {
+  root: 'RxJS',
+  commonjs2: 'rxjs',
+  commonjs: 'rxjs',
+  amd: 'rxjs'
+}
+
 var config = {
   externals: {
     'react': reactExternal,
-    'rx': rxExternal
+    'rx': rxExternal,
+    'rxjs': rxjsExternal
   },
   output: {
     library: "RxConnect",
@@ -49,22 +57,7 @@ var config = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(env)
     })
-  ],
-  devServer: {
-    port: 3000,
-    proxy: {
-      '/rc': {
-        target: "https://stream.wikimedia.org/",
-        secure: true,
-        changeOrigin: true
-      },
-      '/socket.io/1/': {
-        target: "https://stream.wikimedia.org/",
-        secure: true,
-        changeOrigin: true
-      }
-    }
-  }
+  ]
 };
 
 if (env === "production") {

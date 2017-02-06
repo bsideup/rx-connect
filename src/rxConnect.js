@@ -1,7 +1,5 @@
 import React from "react";
 import isPlainObject from "lodash.isplainobject";
-import Rx from "./observable";
-import ObservableSymbol from "symbol-observable";
 
 const DEFAULT_OPTIONS = {
     noDebounce: false
@@ -15,11 +13,11 @@ function isObservable(obj) {
         return false;
     }
 
-    if (Rx.Observable.isObservable) {
-        return Rx.Observable.isObservable(obj);
-    }
+    return getAdapter().isObservable(obj);
+}
 
-    return typeof obj[ObservableSymbol] === 'function';
+export function getAdapter() {
+    return rxConnect.adapter || require("./rx4Adapter");
 }
 
 export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
@@ -36,24 +34,31 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
         constructor(props) {
             super(props);
 
-            this.props$ = new Rx.BehaviorSubject(props);
+            this.props$ = new (getAdapter().Rx.BehaviorSubject)(props);
         }
 
         componentWillMount() {
+            const Rx = getAdapter().Rx;
             this.shouldDebounce = false;
 
             let mutations$ = selector;
             if(!isObservable(mutations$)) {
-                mutations$ = selector(this.props$);
+                if (typeof selector === 'function') {
+                    mutations$ = selector(this.props$);
+                } else {
+                    // eslint-disable-next-line no-console
+                    console.error(`Selector must be a function or an Observable. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, selector);
+                    return;
+                }
             }
 
             if(!isObservable(mutations$)) {
                     // eslint-disable-next-line no-undef
-                if (typeof mutations$[Symbol.iterator] === 'function') {
+                if (mutations$ && typeof mutations$[Symbol.iterator] === 'function') {
                     mutations$ = Rx.Observable.merge(...mutations$);
                 } else {
                     // eslint-disable-next-line no-console
-                    console.error(`Selector must return an Observable, an iterator of observables. Got: `, mutations$);
+                    console.error(`Selector must return an Observable or an iterator of observables. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutations$);
                     return;
                 }
             }
@@ -84,15 +89,11 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
         }
 
         componentWillUnmount() {
-            this.stateSubscription.dispose();
+            getAdapter().unsubscribe(this.stateSubscription);
         }
 
         componentWillReceiveProps(nextProps) {
-            if (this.props$.onNext) {
-                this.props$.onNext(nextProps);
-            } else {
-                this.props$.next(nextProps);
-            }
+            getAdapter().next(this.props$, nextProps);
         }
 
         render() {
