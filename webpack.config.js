@@ -1,7 +1,4 @@
-var webpack = require("webpack");
 var path = require("path");
-
-var env = process.env.NODE_ENV
 
 var reactExternal = {
   root: 'React',
@@ -35,43 +32,26 @@ var config = {
     libraryTarget: "umd"
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: "babel",
-        exclude: /(node_modules)/
+        loader: "babel-loader",
+        exclude: path.join(__dirname, "node_modules")
       },
       {
         test: /\.js$/,
         loader: "eslint-loader",
-        exclude: /node_modules/
+        exclude: path.join(__dirname, "node_modules")
       }
     ]
   },
   resolve: {
-    root: path.resolve("./src"),
-    extensions: ["", ".js"]
-  },
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify(env)
-    })
-  ]
+    modules: [
+      path.resolve(__dirname, "src"),
+      path.resolve(__dirname, "node_modules"),
+      ],
+    extensions: [".js"]
+  }
 };
-
-if (env === "production") {
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        pure_getters: true,
-        unsafe: true,
-        unsafe_comps: true,
-        screw_ie8: true,
-        warnings: false
-      }
-    })
-  )
-}
 
 module.exports = config;
