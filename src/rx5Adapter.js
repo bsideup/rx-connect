@@ -3,8 +3,6 @@ import ObservableSymbol from "symbol-observable";
 
 export default {
 
-    description: "RX5",
-
     Rx,
 
     next(o, value) {
