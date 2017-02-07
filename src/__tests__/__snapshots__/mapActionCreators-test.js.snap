@@ -1,4 +1,4 @@
-exports[`test creates FuncSubject-like action 1`] = `
+exports[`RxJS 4 creates FuncSubject-like action 1`] = `
 Array [
   1,
   2,
@@ -6,14 +6,35 @@ Array [
 ]
 `;
 
-exports[`test passes non-observables as is 1`] = `
+exports[`RxJS 4 passes non-observables as is 1`] = `
 Object {
   "a": 123,
   "b": "hi!",
 }
 `;
 
-exports[`test strips dollar sign from Observable property names 1`] = `
+exports[`RxJS 4 strips dollar sign from Observable property names 1`] = `
+Object {
+  "a": [Function],
+}
+`;
+
+exports[`RxJS 5 creates FuncSubject-like action 1`] = `
+Array [
+  1,
+  2,
+  3,
+]
+`;
+
+exports[`RxJS 5 passes non-observables as is 1`] = `
+Object {
+  "a": 123,
+  "b": "hi!",
+}
+`;
+
+exports[`RxJS 5 strips dollar sign from Observable property names 1`] = `
 Object {
   "a": [Function],
 }

@@ -1,54 +1,54 @@
-exports[`test accepts function-based mutations 1`] = `
+exports[`RxJS 4 accepts function-based mutations 1`] = `
 <div>
   123
 </div>
 `;
 
-exports[`test ignores not connect properties 1`] = `<div />`;
+exports[`RxJS 4 ignores not connect properties 1`] = `<div />`;
 
-exports[`test noDebounce 1`] = `
+exports[`RxJS 4 noDebounce 1`] = `
 <div>
   0
 </div>
 `;
 
-exports[`test noDebounce 2`] = `
+exports[`RxJS 4 noDebounce 2`] = `
 <div>
   1
 </div>
 `;
 
-exports[`test passes children automatically 1`] = `
+exports[`RxJS 4 passes children automatically 1`] = `
 <div>
   Hello, RxConnect!
 </div>
 `;
 
-exports[`test passes properties as Observable 1`] = `
+exports[`RxJS 4 passes properties as Observable 1`] = `
 <div>
   123
 </div>
 `;
 
-exports[`test receives new props 1`] = `
+exports[`RxJS 4 receives new props 1`] = `
 <div>
   15
 </div>
 `;
 
-exports[`test receives new props 2`] = `
+exports[`RxJS 4 receives new props 2`] = `
 <div>
   15
 </div>
 `;
 
-exports[`test receives new props 3`] = `
+exports[`RxJS 4 receives new props 3`] = `
 <div>
   -15
 </div>
 `;
 
-exports[`test throws an error if mutation is neither an object or function 1`] = `
+exports[`RxJS 4 throws an error if mutation is neither an object or function 1`] = `
 Array [
   "Mutation must be a plain object or function. Check rxConnect of Component. Got: ",
   Array [
@@ -57,21 +57,128 @@ Array [
 ]
 `;
 
-exports[`test works with Array 1`] = `
+exports[`RxJS 4 throws an error if selector is neither an Observable or function 1`] = `
+Array [
+  "Selector must be a function or an Observable. Check rxConnect of Component. Got: ",
+  undefined,
+]
+`;
+
+exports[`RxJS 4 throws an error if selector returns non-Observable 1`] = `
+Array [
+  "Selector must return an Observable or an iterator of observables. Check rxConnect of Component. Got: ",
+  undefined,
+]
+`;
+
+exports[`RxJS 4 works with Array 1`] = `
 <div>
   123
   bar
 </div>
 `;
 
-exports[`test works with Generator 1`] = `
+exports[`RxJS 4 works with Generator 1`] = `
 <div>
   123
   bar
 </div>
 `;
 
-exports[`test works with Observable 1`] = `
+exports[`RxJS 4 works with Observable 1`] = `
+<div>
+  123
+</div>
+`;
+
+exports[`RxJS 5 accepts function-based mutations 1`] = `
+<div>
+  123
+</div>
+`;
+
+exports[`RxJS 5 ignores not connect properties 1`] = `<div />`;
+
+exports[`RxJS 5 noDebounce 1`] = `
+<div>
+  0
+</div>
+`;
+
+exports[`RxJS 5 noDebounce 2`] = `
+<div>
+  1
+</div>
+`;
+
+exports[`RxJS 5 passes children automatically 1`] = `
+<div>
+  Hello, RxConnect!
+</div>
+`;
+
+exports[`RxJS 5 passes properties as Observable 1`] = `
+<div>
+  123
+</div>
+`;
+
+exports[`RxJS 5 receives new props 1`] = `
+<div>
+  15
+</div>
+`;
+
+exports[`RxJS 5 receives new props 2`] = `
+<div>
+  15
+</div>
+`;
+
+exports[`RxJS 5 receives new props 3`] = `
+<div>
+  -15
+</div>
+`;
+
+exports[`RxJS 5 throws an error if mutation is neither an object or function 1`] = `
+Array [
+  "Mutation must be a plain object or function. Check rxConnect of Component. Got: ",
+  Array [
+    123,
+  ],
+]
+`;
+
+exports[`RxJS 5 throws an error if selector is neither an Observable or function 1`] = `
+Array [
+  "Selector must be a function or an Observable. Check rxConnect of Component. Got: ",
+  undefined,
+]
+`;
+
+exports[`RxJS 5 throws an error if selector returns non-Observable 1`] = `
+Array [
+  "Selector must return an Observable or an iterator of observables. Check rxConnect of Component. Got: ",
+  undefined,
+]
+`;
+
+exports[`RxJS 5 works with Array 1`] = `
+<div>
+  123
+  bar
+</div>
+`;
+
+exports[`RxJS 5 works with Generator 1`] = `
+<div>
+  123
+  bar
+</div>
+`;
+
+exports[`RxJS 5 works with Observable 1`] = `
 <div>
   123
 </div>
