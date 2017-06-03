@@ -1,4 +1,4 @@
-RxConnect 
+RxConnect
 ========
 [![Gitter](https://badges.gitter.im/bsideup/rx-connect.svg)](https://gitter.im/bsideup/rx-connect)
 [![NPM version](https://img.shields.io/npm/v/rx-connect.svg)](https://npmjs.com/package/rx-connect)
@@ -21,7 +21,7 @@ Replace this:
 
 ```javascript
 class Timer extends React.Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -61,19 +61,23 @@ class Timer extends React.PureComponent {
     }
 }
 ```
+
 [](codepen://bsideup/wzvGAE?height=300)
 
 > **NB:** We use decorators, but it's not required. These two code blocks are completely identical:
+>
 > ```javascript
-@rxConnect(...)
-export class MyView extends React.Component {
-    // ...
-}
-```
+> @rxConnect(...)
+> export class MyView extends React.Component {
+>     // ...
+> }
+> ```
+>
 > and
-> ```javascript
-class MyView extends React.Component {
-    // ...
-}
-export rxConnect(...)(MyView)
-```
+>
+>  ```javascript
+> class MyView extends React.Component {
+>     // ...
+> }
+> export rxConnect(...)(MyView)
+> ```
