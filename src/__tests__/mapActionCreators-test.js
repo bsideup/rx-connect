@@ -1,18 +1,18 @@
-import { mapActionCreators, rxConnect } from "../";
+import { mapActionCreators } from "../";
 import rx5Adapter from "../rx5Adapter";
-import { getAdapter } from "../rxConnect";
+import adapter from "../adapter";
 
 const suites = {
     "RxJS 4": () => {},
-    "RxJS 5": () => rxConnect.adapter = rx5Adapter
+    "RxJS 5": () => adapter.set(rx5Adapter)
 }
 
 Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     let Rx;
     beforeEach(() => {
         initializer();
-        const adapter = getAdapter();
-        Rx = adapter.Rx;
+        const configuredAdapter = adapter.get();
+        Rx = configuredAdapter.Rx;
     });
 
     it("passes non-observables as is", async () => {
