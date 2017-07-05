@@ -1,32 +1,13 @@
 var path = require("path");
 
-var reactExternal = {
-  root: 'React',
-  commonjs2: 'react',
-  commonjs: 'react',
-  amd: 'react'
-}
-
-var rxExternal = {
-  root: 'Rx',
-  commonjs2: 'rx',
-  commonjs: 'rx',
-  amd: 'rx'
-}
-
-var rxjsExternal = {
-  root: 'RxJS',
-  commonjs2: 'rxjs',
-  commonjs: 'rxjs',
-  amd: 'rxjs'
-}
-
 var config = {
-  externals: {
-    'react': reactExternal,
-    'rx': rxExternal,
-    'rxjs': rxjsExternal
-  },
+  externals: [
+    'react',
+    'rx',
+    'rx/dist/rx.lite',
+    'rxjs',
+    'rxjs/Rx',
+  ],
   output: {
     library: "RxConnect",
     libraryTarget: "umd"
