@@ -1,14 +1,16 @@
 language: node_js
-node_js: [ 6 ]
+node_js:
+- 6
 cache:
-  directories: [ node_modules ]
-before_deploy: >
-    node -e 'require("fs").writeFileSync("package.json", JSON.stringify(Object.assign(require("./package"), {version: process.env.TRAVIS_TAG})))'
+  directories:
+  - node_modules
+before_deploy: |
+  node -e 'require("fs").writeFileSync("package.json", JSON.stringify(Object.assign(require("./package"), {version: process.env.TRAVIS_TAG})))'
 deploy:
   provider: npm
-  email: "bsideup@gmail.com"
+  email: bsideup@gmail.com
   skip_cleanup: true
   api_key:
-    secure: bpZJzciIWGkOvssbAbrFj3EtMYTaomnd1uIkfZ88papRjWsCEO+QAvoKxMnIDsmGV7gwUGF2NW+uyzILU6TbZqyFmgFVmx49Wg0yVLPVIdBazQICEF2V/YEmZ8oeBYbV0ViksAbllfiffOYXevwZQVGaXZ2KZFMXcv/gFSqgcP5nT4uu1ijB+4Hy1mdlplnoWKhGO6rUHupyz7+ibFr6GGwuDHsxokzPFri9hzrXkO9xJ5g5fx/TFzWmIm8SUocJv92phJz4Cu7vpGppunO3XGCTm9wsHOhstwmYWZ6Da3qxpIW4kJk+Lr7hPvwGmgeblv6YfdGI/P7BaZ3gdBuaXTqie91IPnPGdwO2+yVXxoLByYOwEXkXoFbDebeNqD6E1rHcH2bTaPVrQNVam/lxyIrKFAkLBF0SMV42k2bhWvwmy+wc9ICxroq0uSylzmJ44hrEQpj1yAhestZId/R9ck9rXiwTCt2UMCXm13kUh/a4vrelFj5l9HKRBypv1hFK/t5I8GU5J6ihVWVJbZ/tq9MDuXIpAy93j47ZJb3QsqO/zPbGB+OS+25bit9HfI6l5kkvcCGqlRUwlXKdgaREtY5naGbidEbv8TVuhNg3ca1XVHLSR0VZ/OWPt3GWrDbsDECc50gICzJ9OF9Fv6Z/UyTmUeLykG+1qN0ydvqECGI=
+    secure: U0gvQGG2og2yVGiohXyDPcJu7DyWASSoTtpPY5SBgYQTiPaQ6T7fg9XB20ERdJBkBu+0cTiZ/gCeOKAjCZyTr5zoVK6/1HDBufuT65MwSrzGSIuvWdGGC+2/BVg+ZxyDfdI66YxZsLmEceE3tB241jl9XzhNb4YW1LZDspUysrF/89SHdui/kSfMtoqpjR+dn2NNCo+s2VC0V/+7c0twlBq40yu30G3ksA/f08XsKjH+q7oipnpSYhr04LvK9aV4iLsRyZ79Add13gXA33tFkfirF8h37fkYxte4/qvyZoM+iPkfsLwx9hC4BzCH47Z3EvNR0sDowmliZD5kEuXCP/KYibbkF2Qb4vqlk3S/1ZzeKHmrAXL/ovk7ftuQT5QKKIlAYijze5jJLBTGRqm9Oqy1YXfTwQjS9nzCu9ED4rOADuPxSmIyH6ZtO2J4J+E5mxRje/8ciwj03gyWKbHqikOEWyOsHXqBgjH9A7UplozxvI9kJx5V9kr6rDN6I4MDFZTfSae22+GPlcDN2JNj7I4HQNpUtt5k0XxJ9vXwE/QmdAcoWz5t4xvtwxobFiEOG5Vmt7rbSGfRaShAbbdyqGcv/gHNrFOf1FwiolnMHYtp0aGVlUBXU0jE+C7iwYpXRelOC1zRw01sePCPcdVmQTeD8WsFw6WN/f+YVVuJTEY=
   on:
-      tags: true
+    tags: true
