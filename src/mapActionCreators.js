@@ -1,4 +1,4 @@
-import { getAdapter } from "./rxConnect";
+import adapter from "./adapter";
 
 export function ofActions(actions) {
     return this.of(
@@ -9,7 +9,7 @@ export function ofActions(actions) {
 
                     if (key.endsWith("$")) {
                         result[key.slice(0, -1)] = (...args) => {
-                            getAdapter().next(action, args);
+                            adapter.get().next(action, args);
                         }
                     } else {
                         result[key] = action;
@@ -23,5 +23,5 @@ export function ofActions(actions) {
 }
 
 export default function mapActionCreators(actions) {
-    return getAdapter().Rx.Observable::ofActions(actions);
+    return adapter.get().Rx.Observable::ofActions(actions);
 }

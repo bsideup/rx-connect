@@ -81,3 +81,13 @@ class Timer extends React.PureComponent {
 > }
 > export rxConnect(...)(MyView)
 > ```
+
+## Rx Support
+rxConnect is set up to use RxJS 4 by default. However, if you want to use RxJS 5 you can set it up like so:
+
+```javascript
+import { adapter, rx5Adapter } from "rx-connect";
+adapter.set(rx5Adapter);
+```
+
+Note that when using RxJS 5, the examples from this repository may not work.

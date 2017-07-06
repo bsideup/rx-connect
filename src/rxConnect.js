@@ -1,5 +1,6 @@
 import React from "react";
 import isPlainObject from "lodash.isplainobject";
+import adapter from "./adapter";
 
 const DEFAULT_OPTIONS = {
     noDebounce: false
@@ -13,11 +14,7 @@ function isObservable(obj) {
         return false;
     }
 
-    return getAdapter().isObservable(obj);
-}
-
-export function getAdapter() {
-    return rxConnect.adapter || require("./rx4Adapter");
+    return adapter.get().isObservable(obj);
 }
 
 export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
@@ -34,11 +31,11 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
         constructor(props) {
             super(props);
 
-            this.props$ = new (getAdapter().Rx.BehaviorSubject)(props);
+            this.props$ = new (adapter.get().Rx.BehaviorSubject)(props);
         }
 
         componentWillMount() {
-            const Rx = getAdapter().Rx;
+            const Rx = adapter.get().Rx;
             this.shouldDebounce = false;
 
             let mutations$ = selector;
@@ -89,11 +86,11 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
         }
 
         componentWillUnmount() {
-            getAdapter().unsubscribe(this.stateSubscription);
+            adapter.get().unsubscribe(this.stateSubscription);
         }
 
         componentWillReceiveProps(nextProps) {
-            getAdapter().next(this.props$, nextProps);
+            adapter.get().next(this.props$, nextProps);
         }
 
         render() {
