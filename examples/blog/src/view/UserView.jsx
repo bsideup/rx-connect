@@ -1,8 +1,8 @@
 import React from "react";
-import Rx from "rx";
+import Rx from "rxjs";
 import { connect } from "react-redux";
 import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
-import { rxConnect } from "rx-connect";
+import { rxConnect } from "../../../../src";
 import { Link } from "react-router";
 
 import { hashCode, toHex } from "../utils";
@@ -14,23 +14,23 @@ import { fetchPosts } from "../actions/posts";
 @rxConnect(props$ => {
     const userId$ = props$.pluck("params", "userId").distinctUntilChanged();
 
-    return userId$.withLatestFrom(props$).flatMapLatest(([userId, { fetchUser, fetchPosts }]) => {
-        const user$ = fetchUser(userId)
-            .catch(Rx.Observable.of(null));
+    return userId$.withLatestFrom(props$)
+        .switchMap(([userId, { fetchUser, fetchPosts }]) => {
+            const user$ = fetchUser(userId)
+                .catch(Rx.Observable.of(null));
 
-        const postsByUser$ = fetchPosts({ userId })
-            .pluck("data")
-            .catch(Rx.Observable.of(null));
+            const postsByUser$ = fetchPosts({ userId })
+                .pluck("data")
+                .catch(Rx.Observable.of(null));
 
-        // combineLatest to wait until both user and posts arrived to avoid flickering
-        return Rx.Observable
-            .combineLatest(user$, postsByUser$)
-            .startWith([])
-            .map(([ user, posts ]) => ({ user, posts }));
+            // combineLatest to wait until both user and posts arrived to avoid flickering
+            return Rx.Observable
+                .combineLatest(user$, postsByUser$)
+                .startWith([])
+                .map(([ user, posts ]) => ({ user, posts }));
     });
 })
 export default class UserView extends React.PureComponent {
-
     render() {
         const { user, posts } = this.props;
 

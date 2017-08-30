@@ -1,9 +1,9 @@
 import React from "react";
-import Rx from "rx";
+import Rx from "rxjs";
 import { connect } from "react-redux";
 import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { Link } from "react-router";
-import { rxConnect } from "rx-connect";
+import { rxConnect } from "../../../../../src";
 
 import { hashCode, toHex, capitalize } from "../../utils";
 
@@ -16,9 +16,9 @@ import Comments from "./Comments";
 @rxConnect(props$ => {
     const postId$ = props$.pluck("params", "postId").distinctUntilChanged();
 
-    return postId$.withLatestFrom(props$).flatMapLatest(([ postId, { fetchComments, fetchPost, fetchUser }]) => {
+    return postId$.withLatestFrom(props$).switchMap(([ postId, { fetchComments, fetchPost, fetchUser }]) => {
         const post$ = fetchPost(postId)
-            .flatMapLatest(post =>
+            .switchMap(post =>
                 fetchUser(post.userId)
                     .map(user => ({ ...post, user }))
             )

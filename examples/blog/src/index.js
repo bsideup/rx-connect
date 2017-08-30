@@ -1,6 +1,4 @@
 import "./style.css";
-import "rx-dom";
-
 import React from "react";
 import ReactDOM from "react-dom";
 import { createStore, compose, applyMiddleware } from 'redux';
