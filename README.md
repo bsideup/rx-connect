@@ -79,3 +79,13 @@ class Timer extends React.PureComponent {
 > }
 > export rxConnect(...)(MyView)
 > ```
+
+## Using Rx4?
+
+This library supports Rx5 by default, but provides an adapter for Rx4:
+
+```js
+import { rxConnect } from "rx-connect";
+import rx4Adapter from "rx-connect/lib/rx4Adapter";
+rxConnect.adapter = rx4Adapter;
+```
