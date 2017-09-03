@@ -9,7 +9,6 @@
     "babel-polyfill": "^6.20.0",
     "react": "~15.3.0",
     "react-dom": "~15.3.0",
-    "rx-connect": "^0.1.5",
     "rxjs": "~5.0.0",
     "semantic-ui-css": "~2.2.2"
   },
