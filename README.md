@@ -53,7 +53,7 @@ with this:
 import { rxConnect } from "rx-connect";
 
 @rxConnect(
-    Rx.Observable.timer(0, 1000).timestamp()
+    Rx.Observable.timer(0, 1000).map(() => ({ timestamp: Date.now() }))
 )
 class Timer extends React.PureComponent {
     render() {
@@ -61,8 +61,6 @@ class Timer extends React.PureComponent {
     }
 }
 ```
-
-[](codepen://bsideup/wzvGAE?height=300)
 
 > **NB:** We use decorators, but it's not required. These two code blocks are completely identical:
 >
