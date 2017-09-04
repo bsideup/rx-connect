@@ -86,7 +86,7 @@ const Timer = rxConnect(
     Rx.Observable.timer(0, 1000).timestamp()
 )(({ value }) => <div>{ value }</div>)
 ```
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/codesandbox/examples/docs?autoresize=1&hidenavigation=1&initialpath=timer%2Fstep-1&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=timer%2Fstep-1&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 #### Benefits:
 * No need to handle subscription manually (error-prone!)

@@ -29,7 +29,7 @@ class MyView extends React.PureComponent {
 }
 ```
 
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/codesandbox/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-1&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-1&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 As you can see, it expects two properties:
 - **articles** - array of articles
@@ -64,7 +64,7 @@ class MyView extends React.PureComponent {
 }
 ```
 
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/codesandbox/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-2&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-2&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 Here we mocked `articles` property with some static data, and we see it rendered! Yay!
 
@@ -109,7 +109,7 @@ class MyView extends React.PureComponent {
 ```
 > **Warning! Do not type too fast, or you'll hit Wikipedia's API requests limit**
 
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/codesandbox/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-3&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-3&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 Nice! It works! We type and we see the results.
 
@@ -166,7 +166,7 @@ actions.search$
     .pluck(0)
     .flatMapLatest(searchWikipedia)
 ```
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/codesandbox/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-4&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-4&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 Now user can type as fast as he wants - RxJS will call API only after user finishes typing.
 
@@ -186,4 +186,4 @@ actions.search$
             .startWith(undefined) // <-- clear articles before we receive the response
     )
 ```
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/codesandbox/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-5&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-5&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
