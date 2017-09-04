@@ -12,6 +12,8 @@ const BasicExample = () =>
       <Route exact path="/usage-with-react/step-5" component={require("./usage-with-react/step-5").default} />
 
       <Route exact path="/timer/step-1" component={require("./timer/step-1").default} />
+
+      <Route exact path="/todos/step-1" component={require("./todos/step-1").default} />
     </div>
   </Router>;
 
