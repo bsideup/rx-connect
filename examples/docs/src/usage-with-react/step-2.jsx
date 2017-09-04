@@ -21,7 +21,7 @@ export default class MyView extends React.PureComponent {
         return (
             <div>
                 <label>
-                    Wiki search: <input type="text" onChange={ e => search(e.target.value) } />
+                    Wiki search: <input type="text" onChange={ e => search && search(e.target.value) } />
                 </label>
 
                 { articles && (
