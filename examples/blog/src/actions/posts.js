@@ -8,7 +8,7 @@ export function fetchPosts({ userId, page } = {}) {
     return () => {
         return Rx.Observable
             .ajax(`//jsonplaceholder.typicode.com/posts?${ userId ? "userId=" + userId : ""}`)
-            .map(e => e.response)
+            .pluck("response")
             .delay(100)
             .map(posts => posts
                 .map(post => ({
@@ -28,7 +28,7 @@ export function fetchPosts({ userId, page } = {}) {
 export function fetchPost(postId) {
     return () => {
         return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}`)
-            .map(e => e.response)
+            .pluck("response")
             .delay(100)
             .map(post => ({
                 ...post,
@@ -39,6 +39,6 @@ export function fetchPost(postId) {
 
 export function fetchComments(postId) {
     return () => {
-        return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}/comments`).map(e => e.response).delay(100);
+        return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}/comments`).pluck("response").delay(100);
     }
 }
