@@ -35,7 +35,6 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
         constructor(props) {
             super(props);
 
-            console.log("using local rx-connect", getAdapter().Rx)
             this.props$ = new (getAdapter().Rx.BehaviorSubject)(props);
         }
 
