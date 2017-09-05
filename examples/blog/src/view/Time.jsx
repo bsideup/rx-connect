@@ -1,12 +1,12 @@
 import React from "react";
 import Rx from "rxjs";
-import { rxConnect } from "../../../../src";
+import { rxConnect } from "rx-connect";
 
 @rxConnect(
-    Rx.Observable.timer(0, 1000).map(() => ({ timestamp: Date.now() }))
+    Rx.Observable.timer(0, 1000).timestamp().map(timestamp => ({ ...timestamp }))
 )
 export default class Time extends React.PureComponent {
     render() {
-        return <div>{this.props.value} {new Date(this.props.timestamp).toLocaleTimeString()}</div>
+        return <div>{new Date(this.props.timestamp).toLocaleTimeString()}</div>
     }
 }

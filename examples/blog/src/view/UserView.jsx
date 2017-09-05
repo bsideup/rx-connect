@@ -2,7 +2,7 @@ import React from "react";
 import Rx from "rxjs";
 import { connect } from "react-redux";
 import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
-import { rxConnect } from "../../../../src";
+import { rxConnect } from "rx-connect";
 import { Link } from "react-router";
 
 import { hashCode, toHex } from "../utils";

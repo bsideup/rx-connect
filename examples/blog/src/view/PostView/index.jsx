@@ -3,7 +3,7 @@ import Rx from "rxjs";
 import { connect } from "react-redux";
 import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { Link } from "react-router";
-import { rxConnect } from "../../../../../src";
+import { rxConnect } from "rx-connect";
 
 import { hashCode, toHex, capitalize } from "../../utils";
 

@@ -3,7 +3,7 @@ import "babel-polyfill";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { rxConnect, ofActions } from "../../../src";
+import { rxConnect, ofActions } from "rx-connect";
 import Rx from "rxjs";
 
 import { ofWikiChanges } from "./wikiChangesObservable";
