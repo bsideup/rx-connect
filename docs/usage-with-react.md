@@ -161,9 +161,9 @@ User types "re" - request is sent. He types "rea" - request is sent. He types "r
 Slightly modify your reaction with one more operator:
 ```javascript
 actions.search$
-    .debounce(500) // <-- RxJS FTW!
+    .debounceTime(500) // <-- RxJS FTW!
     .pluck(0)
-    .flatMapLatest(searchWikipedia)
+    .switchMap(searchWikipedia)
 ```
 [](codepen://bsideup/gwOLdK?height=500)
 
@@ -178,9 +178,9 @@ Remember I said that we combine streams of data, so your component is reactive? 
 
 ```javascript
 actions.search$
-    .debounce(500)
+    .debounceTime(500)
     .pluck(0)
-    .flatMapLatest(search =>
+    .switchMap(search =>
         searchWikipedia(search)
             .startWith(undefined) // <-- clear articles before we receive the response
     )
