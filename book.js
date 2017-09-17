@@ -13,7 +13,6 @@ module.exports = {
         '-fontsettings',
         '-highlight',
         'prism_bsideup',
-        'codepen',
         'regexplace'
     ],
 

@@ -1,0 +1,22 @@
+{
+    "name": "rx-connect-docs-examples",
+    "private": true,
+    "scripts": {
+        "build": "nwb build",
+        "serve": "nwb serve"
+    },
+    "dependencies": {
+        "react": "~15.3.0",
+        "react-dom": "~15.3.0",
+        "react-redux": "^5.0.6",
+        "react-router-dom": "4.2.2",
+        "redux": "^3.7.2",
+        "redux-thunk": "^2.2.0",
+        "rx": "^4.1.0",
+        "rx-connect": "=0.6.2",
+        "rx-dom": "^7.0.3"
+    },
+    "devDependencies": {
+        "nwb": "^0.18.0"
+    }
+}
