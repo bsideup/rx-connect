@@ -39,6 +39,8 @@ export function fetchPost(postId) {
 
 export function fetchComments(postId) {
     return () => {
-        return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}/comments`).pluck("response").delay(100);
+        return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}/comments`)
+            .pluck("response")
+            .delay(100);
     }
 }
