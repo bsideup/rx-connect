@@ -1,5 +1,7 @@
 import React from "react";
 import isPlainObject from "lodash.isplainobject";
+import isObject from "lodash.isobject";
+import isArray from "lodash.isarray";
 
 const DEFAULT_OPTIONS = {
     noDebounce: false
@@ -66,12 +68,16 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
 
             this.stateSubscription = mutations$
                 .scan((state, mutation) => {
+                    if (typeof mutation === "function") {
+                        return mutation(state);
+                    }
+
                     if (isPlainObject(mutation)) {
                         return Object.assign({}, state, mutation);
                     }
 
-                    if (typeof mutation === "function") {
-                        return mutation(state);
+                    if (isObject(mutation) && !isArray(mutation)) {
+                        return Object.assign({}, state, {...mutation});
                     }
 
                     // eslint-disable-next-line no-console
