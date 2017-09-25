@@ -53,7 +53,7 @@ with this:
 import { rxConnect } from "rx-connect";
 
 @rxConnect(
-    Rx.Observable.timer(0, 1000).map(() => ({ timestamp: Date.now() }))
+    Rx.Observable.timer(0, 1000).timestamp()
 )
 class Timer extends React.PureComponent {
     render() {
