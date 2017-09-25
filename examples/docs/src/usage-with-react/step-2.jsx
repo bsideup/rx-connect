@@ -1,5 +1,5 @@
 import React from "react";
-import Rx from "rx";
+import Rx from "rxjs";
 import { rxConnect } from "rx-connect";
 
 @rxConnect(Rx.Observable.of({

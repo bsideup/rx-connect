@@ -4,13 +4,13 @@ module.exports = {
       stage: 0,
       runtime: true
     },
-  
+
     karma: false,
-  
+
     devServer: {
       hot: false
     },
-  
+
     webpack: {
       rules: {
         babel: {
@@ -27,4 +27,3 @@ module.exports = {
       }
     }
   }
-  

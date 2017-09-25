@@ -1,11 +1,14 @@
 import React from "react";
-import Rx from "rx";
-import "rx-dom";
+import Rx from "rxjs";
 import { rxConnect, mapActionCreators } from "rx-connect";
 
 function searchWikipedia(search) {
-    return Rx.DOM
-        .jsonpRequest(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${search}&format=json&callback=JSONPCallback`)
+    return Rx.Observable
+        .ajax({
+            url: `https://en.wikipedia.org/w/api.php?action=opensearch&search=${search}&format=json&origin=*`,
+            crossDomain: true,
+            createXHR: () => new XMLHttpRequest()
+        })
         .pluck("response")
         // Wikipedia has really weird response format o_O
         .map(([,titles,,urls]) => titles.map((title, i) => ({ title, url: urls[i] })))
@@ -18,7 +21,7 @@ function searchWikipedia(search) {
 
     const articles$ = actions.search$
         .pluck(0) // select first passed argument
-        .flatMapLatest(searchWikipedia)
+        .switchMap(searchWikipedia)
 
     return Rx.Observable.merge(
         mapActionCreators(actions),

@@ -1,8 +1,7 @@
 import { rxConnect, mapActionCreators } from "rx-connect";
 import React from "react";
 import { createStore, applyMiddleware } from "redux";
-import Rx from "rx";
-import "rx-dom";
+import Rx from "rxjs";
 import thunk from "redux-thunk";
 import { connect, Provider } from "react-redux";
 
@@ -22,7 +21,7 @@ import { connect, Provider } from "react-redux";
     const todos$ = Rx.Observable
         .combineLatest(userId$, completed$)
         .withLatestFrom(props$)
-        .flatMapLatest(([[userId, completed], { fetchData }]) =>
+        .switchMap(([[userId, completed], { fetchData }]) =>
             fetchData(userId, completed)
                 .startWith(undefined)
         );
@@ -55,7 +54,7 @@ class TodoList extends React.PureComponent {
 }
 
 function fetchData(userId, completed) {
-    return () => Rx.DOM.getJSON(`//jsonplaceholder.typicode.com/todos?userId=${userId}${completed ? "&completed=true" : ""}`).delay(500)
+    return () => Rx.Observable.ajax(`//jsonplaceholder.typicode.com/todos?userId=${userId}${completed ? "&completed=true" : ""}`).pluck("response").delay(500)
 }
 
 // Mock reducer
