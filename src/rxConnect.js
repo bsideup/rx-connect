@@ -1,5 +1,7 @@
 import React from "react";
 import isPlainObject from "lodash.isplainobject";
+import isObject from "lodash.isobject";
+import isArray from "lodash.isarray";
 
 const DEFAULT_OPTIONS = {
     noDebounce: false
@@ -17,7 +19,8 @@ function isObservable(obj) {
 }
 
 export function getAdapter() {
-    return rxConnect.adapter || require("./rx4Adapter");
+    const adapter = rxConnect.adapter || require("./rx5Adapter");
+    return adapter.__esModule ? adapter.default : adapter;
 }
 
 export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
@@ -65,12 +68,16 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
 
             this.stateSubscription = mutations$
                 .scan((state, mutation) => {
+                    if (typeof mutation === "function") {
+                        return mutation(state);
+                    }
+
                     if (isPlainObject(mutation)) {
                         return Object.assign({}, state, mutation);
                     }
 
-                    if (typeof mutation === "function") {
-                        return mutation(state);
+                    if (isObject(mutation) && !isArray(mutation)) {
+                        return Object.assign({}, state, {...mutation});
                     }
 
                     // eslint-disable-next-line no-console

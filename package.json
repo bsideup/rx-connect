@@ -71,9 +71,11 @@
   },
   "peerDependencies": {
     "react": "^15.3.0",
-    "rx": "^4.1.0"
+    "rxjs": "^5.1.0"
   },
   "dependencies": {
+    "lodash.isarray": "^4.0.0",
+    "lodash.isobject": "^3.0.2",
     "lodash.isplainobject": "^4.0.6",
     "symbol-observable": "^1.0.4"
   }

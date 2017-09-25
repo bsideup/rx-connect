@@ -4,10 +4,7 @@ import "babel-polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
 import { rxConnect, ofActions } from "rx-connect";
-import rx5Adapter from "../../../lib/rx5Adapter";
 import Rx from "rxjs";
-
-rxConnect.adapter = rx5Adapter;
 
 import { ofWikiChanges } from "./wikiChangesObservable";
 

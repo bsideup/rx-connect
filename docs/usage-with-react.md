@@ -162,9 +162,9 @@ User types "re" - request is sent. He types "rea" - request is sent. He types "r
 Slightly modify your reaction with one more operator:
 ```javascript
 actions.search$
-    .debounce(500) // <-- RxJS FTW!
+    .debounceTime(500) // <-- RxJS FTW!
     .pluck(0)
-    .flatMapLatest(searchWikipedia)
+    .switchMap(searchWikipedia)
 ```
 <iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=usage-with-react%2Fstep-4&view=preview" style="width:100%; height:500px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
@@ -179,9 +179,9 @@ Remember I said that we combine streams of data, so your component is reactive? 
 
 ```javascript
 actions.search$
-    .debounce(500)
+    .debounceTime(500)
     .pluck(0)
-    .flatMapLatest(search =>
+    .switchMap(search =>
         searchWikipedia(search)
             .startWith(undefined) // <-- clear articles before we receive the response
     )

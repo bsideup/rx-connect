@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { Link } from "react-router";
-import { rxConnect } from "rx-connect";
 
 import Time from "./Time";
 

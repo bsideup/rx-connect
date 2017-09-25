@@ -1,4 +1,4 @@
-import Rx from "rx";
+import Rx from "rxjs";
 
 export const USER_LOGGED_IN = `${__filename}/userLoggedIn`;
 export const USER_LOGGED_OUT = `${__filename}/userLoggedOut`;
@@ -17,7 +17,7 @@ export function login(email, password) {
 
         return dispatch(fetchUser(5)) // Simulate auth
             .delay(100)
-            .doOnNext(user => dispatch({ type: USER_LOGGED_IN, user }))
+            .do(user => dispatch({ type: USER_LOGGED_IN, user }))
     }
 }
 

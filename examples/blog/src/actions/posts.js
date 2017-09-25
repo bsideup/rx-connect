@@ -1,4 +1,4 @@
-import Rx from "rx";
+import Rx from "rxjs";
 
 import { hashCode } from "../utils";
 
@@ -6,8 +6,9 @@ const PAGE_SIZE = 10;
 
 export function fetchPosts({ userId, page } = {}) {
     return () => {
-        return Rx.DOM
-            .getJSON(`//jsonplaceholder.typicode.com/posts?${ userId ? "userId=" + userId : ""}`)
+        return Rx.Observable
+            .ajax(`//jsonplaceholder.typicode.com/posts?${ userId ? "userId=" + userId : ""}`)
+            .pluck("response")
             .delay(100)
             .map(posts => posts
                 .map(post => ({
@@ -26,7 +27,8 @@ export function fetchPosts({ userId, page } = {}) {
 
 export function fetchPost(postId) {
     return () => {
-        return Rx.DOM.getJSON(`//jsonplaceholder.typicode.com/posts/${postId}`)
+        return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}`)
+            .pluck("response")
             .delay(100)
             .map(post => ({
                 ...post,
@@ -37,6 +39,8 @@ export function fetchPost(postId) {
 
 export function fetchComments(postId) {
     return () => {
-        return Rx.DOM.getJSON(`//jsonplaceholder.typicode.com/posts/${postId}/comments`).delay(100);
+        return Rx.Observable.ajax(`//jsonplaceholder.typicode.com/posts/${postId}/comments`)
+            .pluck("response")
+            .delay(100);
     }
 }

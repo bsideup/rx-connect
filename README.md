@@ -62,8 +62,6 @@ class Timer extends React.PureComponent {
 }
 ```
 
-<iframe src="https://codesandbox.io/embed/github/bsideup/rx-connect/tree/master/examples/docs?autoresize=1&hidenavigation=1&initialpath=timer%2Fstep-1&view=preview" style="width:100%; height:300px; border:0; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
-
 > **NB:** We use decorators, but it's not required. These two code blocks are completely identical:
 >
 > ```javascript
@@ -81,3 +79,13 @@ class Timer extends React.PureComponent {
 > }
 > export rxConnect(...)(MyView)
 > ```
+
+## Using RxJS 4?
+
+This library supports RxJS 5 by default, but provides an adapter for RxJS 4:
+
+```js
+import { rxConnect } from "rx-connect";
+import rx4Adapter from "rx-connect/lib/rx4Adapter";
+rxConnect.adapter = rx4Adapter;
+```

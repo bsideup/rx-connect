@@ -1,5 +1,5 @@
 import React from "react";
-import Rx from "rx";
+import Rx from "rxjs";
 import { connect } from "react-redux";
 import wrapActionCreators from "react-redux/lib/utils/wrapActionCreators";
 import { rxConnect } from "rx-connect";
@@ -14,10 +14,10 @@ import Post from "./Post";
 
 @connect(undefined, wrapActionCreators({ fetchPosts, fetchUsers }))
 @rxConnect(props$ => {
-    const page$ = props$.pluck("location", "query", "page").map(page => page ? Number(page) : 1).distinctUntilChanged().shareReplay(1);
+    const page$ = props$.pluck("location", "query", "page").map(page => page ? Number(page) : 1).distinctUntilChanged().publishReplay().refCount();
 
     const posts$ = page$.withLatestFrom(props$)
-        .flatMapLatest(([page, { fetchPosts }]) =>
+        .switchMap(([page, { fetchPosts }]) =>
             fetchPosts({ page: page - 1 })
                 .startWith(undefined)
         );
@@ -25,7 +25,7 @@ import Post from "./Post";
     const users$ = props$
         .pluck("fetchUsers")
         .distinctUntilChanged()
-        .flatMapLatest(fetchUsers => fetchUsers())
+        .switchMap(fetchUsers => fetchUsers())
         .map(users => users::keyBy("id"));
 
     return Rx.Observable.merge(
