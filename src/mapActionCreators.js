@@ -25,5 +25,5 @@ export function ofActions(actions) {
 }
 
 export default function mapActionCreators(actions) {
-    return getAdapter().Observable::ofActions(actions);
+    return getAdapter().Rx.Observable::ofActions(actions);
 }
