@@ -1,10 +1,10 @@
 import { mapActionCreators, rxConnect } from "../";
-// import rx4Adapter from "../rx4Adapter";
+import rx5Adapter from "../rx5Adapter";
 import { getAdapter } from "../rxConnect";
 
 const suites = {
     "RxJS 6": () => {},
-  // "RxJS 4": () => rxConnect.adapter = rx4Adapter,
+    "RxJS 5": () => rxConnect.adapter = rx5Adapter,
 }
 
 Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
