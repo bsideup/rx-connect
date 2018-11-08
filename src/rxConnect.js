@@ -19,7 +19,7 @@ function isObservable(obj) {
 }
 
 export function getAdapter() {
-    const adapter = rxConnect.adapter || require("./rx5Adapter");
+    const adapter = rxConnect.adapter || require("./rx6adapter");
     return adapter.__esModule ? adapter.default : adapter;
 }
 
@@ -36,12 +36,15 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
 
         constructor(props) {
             super(props);
+            const { Rx } = getAdapter();
 
-            this.props$ = new (getAdapter().Rx.BehaviorSubject)(props);
+            this.props$ = new (Rx.BehaviorSubject)(props);
         }
 
         componentWillMount() {
-            const Rx = getAdapter().Rx;
+            const { Rx } = getAdapter();
+            const { Observable } = Rx;
+
             this.shouldDebounce = false;
 
             let mutations$ = selector;
@@ -58,16 +61,16 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
             if(!isObservable(mutations$)) {
                     // eslint-disable-next-line no-undef
                 if (mutations$ && typeof mutations$[Symbol.iterator] === 'function') {
-                    mutations$ = Rx.Observable.merge(...mutations$);
+                    mutations$ = Observable.merge(...mutations$);
                 } else {
                     // eslint-disable-next-line no-console
                     console.error(`Selector must return an Observable or an iterator of observables. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutations$);
                     return;
                 }
             }
-
-            this.stateSubscription = mutations$
-                .scan((state, mutation) => {
+            
+            this.stateSubscription = mutations$.pipe(
+                Observable.scan((state, mutation) => {
                     if (typeof mutation === "function") {
                         return mutation(state);
                     }
@@ -83,11 +86,11 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
                     // eslint-disable-next-line no-console
                     console.error(`Mutation must be a plain object or function. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutation);
                     return state;
-                }, {})
-                .debounce(() => (!options.noDebounce && this.shouldDebounce) ? Rx.Observable.interval(0) : Rx.Observable.of())
-                .subscribe(state => {
-                    this.subProps = state;
-                    this.forceUpdate();
+                }, {}),
+                Observable.debounce(() => (!options.noDebounce && this.shouldDebounce) ? Observable.interval(0) : Observable.of()),
+                ).subscribe(state => {
+                  this.subProps = state;
+                  this.forceUpdate();
                 });
         }
 

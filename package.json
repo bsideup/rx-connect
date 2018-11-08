@@ -10,7 +10,8 @@
     "build:umd": "cross-env NODE_ENV=development webpack src/index.js dist/rx-connect.js",
     "build:umd:min": "cross-env NODE_ENV=production webpack src/index.js dist/rx-connect.min.js",
     "build": "npm run build:lib && npm run build:umd && npm run build:umd:min",
-    "test": "npm run lint && jest",
+    "test": "jest",
+    "test:watch": "npm run test -- --watch",
     "prepublish": "npm run clean && npm run test && npm run build",
     "examples:build:blog": "cd examples/blog/ && cross-env NODE_ENV=production npm run build",
     "examples:build:wikistream": "cd examples/wikistream/ && cross-env NODE_ENV=production npm run build",
@@ -65,13 +66,13 @@
     "redux": "^3.5.2",
     "rimraf": "^2.5.4",
     "rx": "^4.1.0",
-    "rxjs": "^5.1.0",
+    "rxjs": "^6.3.3",
     "webpack": "^2.2.1",
     "yargs": "^6.6.0"
   },
   "peerDependencies": {
     "react": "^15.3.0",
-    "rxjs": "^5.1.0"
+    "rxjs": "^6.3.3"
   },
   "dependencies": {
     "lodash.isarray": "^4.0.0",

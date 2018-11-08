@@ -2,12 +2,12 @@ import React from "react";
 import renderer from "react-test-renderer";
 
 import { rxConnect } from "../";
-import rx4Adapter from "../rx4Adapter";
+// import rx4Adapter from "../rx4Adapter";
 import { getAdapter } from "../rxConnect";
 
 const suites = {
-    "RxJS 5": () => {},
-    "RxJS 4": () => rxConnect.adapter = rx4Adapter,
+    "RxJS 6": () => {},
+  // "RxJS 4": () => rxConnect.adapter = rx4Adapter,
 }
 
 Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
@@ -55,7 +55,10 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("passes properties as Observable", () => {
-        const connector = props$ => props$.pluck("someProp").map(a => ({ a }));
+        const connector = props$ => props$.pipe(
+          Rx.Observable.pluck("someProp"), 
+          Rx.Observable.map(a => ({ a }))
+        );
 
         const Component = rxConnect(connector)(({ a }) => <div>{a}</div>);
 
@@ -122,7 +125,9 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("receives new props", async () => {
-        const connector = props$ => props$.map(({ a, b }) => ({ a: a + b }));
+        const connector = props$ => props$.pipe(
+          Rx.Observable.map(({ a, b }) => ({ a: a + b }))
+        );
 
         const Component = rxConnect(connector)(({ a }) => <div>{a}</div>);
 
@@ -150,7 +155,9 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
         parent.getInstance().setState({ b: -10 });
 
         // Skip 1 frame because of debounce
-        await Rx.Observable.interval(0).take(1).toPromise();
+        await Rx.Observable.interval(0).pipe(
+          Rx.Observable.take(1)
+        ).toPromise();
 
         expect(parent.toJSON()).toMatchSnapshot();
     });
