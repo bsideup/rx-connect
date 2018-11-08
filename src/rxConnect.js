@@ -42,8 +42,7 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
         }
 
         componentWillMount() {
-            const { Rx } = getAdapter();
-            const { Observable } = Rx;
+            const { Rx: { Observable } } = getAdapter();
 
             this.shouldDebounce = false;
 

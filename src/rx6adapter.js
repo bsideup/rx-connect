@@ -7,7 +7,6 @@ const handler = {
   }
 };
 
-// eslint-disable-next-line
 const ObservableProxy = new Proxy({
   merge,
   scan,
