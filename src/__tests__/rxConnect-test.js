@@ -55,7 +55,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("passes properties as Observable", () => {
-        const connector = props$ => props$.pipe(Rx.Observable.pluck("someProp"),Rx.Observable.map(a => ({ a })));
+        const connector = props$ => props$.pipe(Rx.Observable.pluck("someProp"), Rx.Observable.map(a => ({ a })));
 
         const Component = rxConnect(connector)(({ a }) => <div>{a}</div>);
 
