@@ -8,7 +8,7 @@ RxConnect
 RxConnect is like [Redux](https://github.com/reactjs/redux)'s `@connect`, but with all the power of [RxJS](https://github.com/Reactive-Extensions/RxJS).
 
 ```
-npm install --save rx-connect
+npm install --save rx-connect	
 ```
 
 <!--remove-->
@@ -85,7 +85,7 @@ class Timer extends React.PureComponent {
 This library supports RxJS 5 by default, but provides an adapter for RxJS 4:
 
 ```js
-import { rxConnect } from "rx-connect";
+import { rx4Connect } from "rx-connect";
 import rx4Adapter from "rx-connect/lib/rx4Adapter";
-rxConnect.adapter = rx4Adapter;
+rx4Connect.adapter = rx4Adapter;
 ```

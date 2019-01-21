@@ -1,12 +1,11 @@
 import React from "react";
 import renderer from "react-test-renderer";
 
-import { rxConnect, rx4Connect } from "../";
+import { rx4Connect } from "../";
 import rx4Adapter from "../rx4Adapter";
-import { getAdapter } from "../rxConnect";
+import { getAdapter } from "../rx4Connect";
 
 const suites = {
-    "RxJS 5 and 6": () => {},
     "RxJS 4": () => rx4Connect.adapter = rx4Adapter,
 }
 
@@ -21,7 +20,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     it("works with Observable", () => {
         const props$ = Rx.Observable.of({ a: 123 });
 
-        const Component = rxConnect(props$)(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(props$)(({ a }) => <div>{a}</div>);
 
         const tree = renderer.create(<Component />).toJSON();
 
@@ -34,7 +33,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
             Rx.Observable.of({ foo: "bar" }),
         ];
 
-        const Component = rxConnect(props$)(({ a, foo }) => <div>{a}{foo}</div>);
+        const Component = rx4Connect(props$)(({ a, foo }) => <div>{a}{foo}</div>);
 
         const tree = renderer.create(<Component />).toJSON();
 
@@ -47,7 +46,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
             yield Rx.Observable.of({ foo: "bar" });
         };
 
-        const Component = rxConnect(props$)(({ a, foo }) => <div>{a}{foo}</div>);
+        const Component = rx4Connect(props$)(({ a, foo }) => <div>{a}{foo}</div>);
 
         const tree = renderer.create(<Component />).toJSON();
 
@@ -55,9 +54,9 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("passes properties as Observable", () => {
-        const connector = props$ => props$.pipe(Rx.Observable.pluck("someProp"),Rx.Observable.map(a => ({ a })));
+        const connector = props$ => props$.pluck("someProp").map(a => ({ a }));
 
-        const Component = rxConnect(connector)(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(connector)(({ a }) => <div>{a}</div>);
 
         const tree = renderer.create(<Component someProp={123} />).toJSON();
 
@@ -65,15 +64,15 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("passes children automatically", () => {
-        const Component = rxConnect(Rx.Observable.of({}))(({ children }) => <div>{children}</div>);
+        const Component = rx4Connect(Rx.Observable.of({}))(({ children }) => <div>{children}</div>);
 
-        const tree = renderer.create(<Component>Hello, RxConnect!</Component>).toJSON();
+        const tree = renderer.create(<Component>Hello, rx4Connect!</Component>).toJSON();
 
         expect(tree).toMatchSnapshot();
     });
 
     it("ignores not connect properties", () => {
-        const Component = rxConnect(Rx.Observable.of({ }))(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(Rx.Observable.of({ }))(({ a }) => <div>{a}</div>);
 
         const tree = renderer.create(<Component a={123} />).toJSON();
 
@@ -81,7 +80,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("accepts function-based mutations", () => {
-        const Component = rxConnect(Rx.Observable.of(() => ({ a: 123 })))(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(Rx.Observable.of(() => ({ a: 123 })))(({ a }) => <div>{a}</div>);
 
         const tree = renderer.create(<Component />).toJSON();
 
@@ -92,7 +91,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
         // eslint-disable-next-line no-console
         console.error = jest.genMockFn();
 
-        const Component = rxConnect(Rx.Observable.of([ 123 ]))(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(Rx.Observable.of([ 123 ]))(({ a }) => <div>{a}</div>);
         renderer.create(<Component />).toJSON();
 
         // eslint-disable-next-line no-console
@@ -103,7 +102,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
         // eslint-disable-next-line no-console
         console.error = jest.genMockFn();
 
-        const Component = rxConnect(undefined)(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(undefined)(({ a }) => <div>{a}</div>);
         renderer.create(<Component />).toJSON();
 
         // eslint-disable-next-line no-console
@@ -114,7 +113,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
         // eslint-disable-next-line no-console
         console.error = jest.genMockFn();
 
-        const Component = rxConnect(() => undefined)(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(() => undefined)(({ a }) => <div>{a}</div>);
         renderer.create(<Component />).toJSON();
 
         // eslint-disable-next-line no-console
@@ -122,9 +121,9 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
     });
 
     it("receives new props", async () => {
-        const connector = props$ => props$.pipe(Rx.Observable.map(({ a, b }) => ({ a: a + b })));
+        const connector = props$ => props$.map(({ a, b }) => ({ a: a + b }));
 
-        const Component = rxConnect(connector)(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(connector)(({ a }) => <div>{a}</div>);
 
         class Parent extends React.Component {
             state = {
@@ -150,13 +149,13 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
         parent.getInstance().setState({ b: -10 });
 
         // Skip 1 frame because of debounce
-        await Rx.Observable.interval(0).pipe(Rx.Observable.take(1)).toPromise();
+        await Rx.Observable.interval(0).take(1).toPromise();
 
         expect(parent.toJSON()).toMatchSnapshot();
     });
 
     it("noDebounce", () => {
-        const Component = rxConnect(props$ => props$, { noDebounce: true })(({ i }) => <div>{i}</div>);
+        const Component = rx4Connect(props$ => props$, { noDebounce: true })(({ i }) => <div>{i}</div>);
 
         class Parent extends React.Component {
             state = {
@@ -182,7 +181,7 @@ Object.entries(suites).forEach(([ name, initializer ]) => describe(name, () => {
 
         expect(props$.observers).toHaveLength(0);
 
-        const Component = rxConnect(props$)(({ a }) => <div>{a}</div>);
+        const Component = rx4Connect(props$)(({ a }) => <div>{a}</div>);
 
         const node = renderer.create(<Component />);
 

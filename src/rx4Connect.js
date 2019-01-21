@@ -66,8 +66,8 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
                 }
             }
 
-            this.stateSubscription = mutations$.pipe(
-              Rx.Observable.scan((state, mutation) => {
+            this.stateSubscription = mutations$
+                .scan((state, mutation) => {
                     if (typeof mutation === "function") {
                         return mutation(state);
                     }
@@ -83,9 +83,8 @@ export default function rxConnect(selector, options = DEFAULT_OPTIONS) {
                     // eslint-disable-next-line no-console
                     console.error(`Mutation must be a plain object or function. Check rxConnect of ${getDisplayName(WrappedComponent)}. Got: `, mutation);
                     return state;
-                }, {}),
-              Rx.Observable.debounce(() => (!options.noDebounce && this.shouldDebounce) ? Rx.Observable.interval(0) : Rx.Observable.of())
-            )
+                }, {})
+                .debounce(() => (!options.noDebounce && this.shouldDebounce) ? Rx.Observable.interval(0) : Rx.Observable.of())
                 .subscribe(state => {
                     this.subProps = state;
                     this.forceUpdate();
