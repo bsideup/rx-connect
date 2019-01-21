@@ -1,7 +1,9 @@
 import { getAdapter } from "./rxConnect";
 
 export function ofActions(actions) {
-    return this.of(
+    const { Rx } = getAdapter();
+
+    return Rx.Observable.of(
         Object.keys(actions)
             .reduce(
                 (result, key) => {
